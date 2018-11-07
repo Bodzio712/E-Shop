@@ -11,28 +11,28 @@ def root():
     return render_template('index.html')
 
 @app.route("/rodzaje")
-def root():
+def rodzaje():
     return render_template('index.html')
 
 @app.route("/producenci")
-def root():
+def producenci():
     return render_template('index.html')
 
 
 @app.route("/kategorie")
-def root():
+def kategorie():
     return render_template('index.html')
 
 @app.route("/account/profil")
-def root():
+def accountProfil():
     return render_template('index.html')
 
 @app.route("/account/orders")
-def root():
+def accountOrders():
     return render_template('index.html')
 
-@app.route("/account/cart")
-def root():
+@app.route("/cart")
+def cart():
     return render_template('index.html')
 
 
