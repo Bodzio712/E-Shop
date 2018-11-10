@@ -5,8 +5,6 @@ import sqlite3
 import os
 import werkzeug
 from sqlalchemy import *
-from sqlalchemy.orm import *
-
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
@@ -38,8 +36,7 @@ def rodzaje():
     prod_sel = select([product]).where(product.c.typeId == typeId)
     prodData = engine.execute(prod_sel).fetchall()
     print(prodData)
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData,
-                           productData = prodData)
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, productData = prodData)
 
 @app.route("/producenci")
 def producenci():
@@ -57,6 +54,7 @@ def kategorie():
     product = Table('product', metadata, autoload=True, autoload_with=engine)
     prod_sel = select([product]).where(product.c.categoryId == kategoriaId)
     prodData = engine.execute(prod_sel).fetchall()
+    print(prodData)
     return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData,
                            productData=prodData)
 
@@ -101,6 +99,15 @@ def accountProfil():
 @app.route("/account/orders")
 def accountOrders():
     return render_template('index.html')
+
+@app.route("/loginForm")
+def loginForm():
+    return render_template('login.html')
+
+
+@app.route("/registerForm")
+def registerForm():
+    return render_template('register.html')
 
 
 @app.route("/loginForm")
