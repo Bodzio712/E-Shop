@@ -1,9 +1,9 @@
 import sqlite3
 
-#Open database
+# Open database
 conn = sqlite3.connect('database.db')
 
-#Create table
+# Create table
 conn.execute('''CREATE TABLE client 
 		(clientId INTEGER PRIMARY KEY, 
         firstName TEXT,
@@ -35,34 +35,11 @@ conn.execute('''CREATE TABLE product
         FOREIGN KEY(taxId) REFERENCES taxation(taxId)
 		)''')
 
-conn.execute('''CREATE TABLE order
-		(orderID INTEGER PRIMARY KEY,
-		productId INTEGER,
-        productName TEXT,
-        categoryId INTEGER,
-        clientId INTEGER,
-        clientAddress TEXT,
-        idNip INTEGER,
-        date TEXT,
-        quantity INTEGER,
-        valueNet REAL,
-        valueGross REAL,
-        deliveryId INTEGER,
-        paymentId INTEGER,
-		FOREIGN KEY(productId) REFERENCES product(productId),
-		FOREIGN KEY(productName) REFERENCES product(productName),
-        FOREIGN KEY(categoryId) REFERENCES category(categoryId),
-        FOREIGN KEY(clientId) REFERENCES client(clientId),
-        FOREIGN KEY(clientAddress) REFERENCES client(clientAddress),
-        FOREIGN KEY(idNip) REFERENCES company(idNip),
-        FOREIGN KEY(deliveryId) REFERENCES client(deliveryId),
-        FOREIGN KEY(paymentId) REFERENCES client(paymentId)
-		)''')
-
-conn.execute('''CREATE TABLE categorie
+conn.execute('''CREATE TABLE category
 		(categoryId INTEGER PRIMARY KEY,
 		name TEXT
 		)''')
+
 
 conn.execute('''CREATE TABLE type
         (typeId INTEGER PRIMARY KEY,
@@ -124,7 +101,7 @@ conn.execute('''CREATE TABLE company
 		name TEXT,
         address TEXT,
         phone TEXT,
-        email TEXT,
+        email TEXT
 		)''')
 
 conn.execute('''CREATE TABLE availability
@@ -134,3 +111,29 @@ conn.execute('''CREATE TABLE availability
         FOREIGN KEY(warehouseId) REFERENCES warehouse(warehouseId),
         FOREIGN KEY(productId) REFERENCES product(productId)
 		)''')
+
+conn.execute('''CREATE TABLE orders
+		(orderID INTEGER PRIMARY KEY,
+		productId INTEGER,
+        productName TEXT,
+        categoryId INTEGER,
+        clientId INTEGER,
+        clientAddress TEXT,
+        idNip INTEGER,
+        deliveryId INTEGER,
+        paymentId INTEGER,
+        date TEXT,
+        quantity INTEGER,
+        valueNet REAL,
+        valueGross REAL,
+        FOREIGN KEY(productId) REFERENCES product(productId),
+        FOREIGN KEY(productName) REFERENCES product(productName),
+        FOREIGN KEY(categoryId) REFERENCES product(categoryId),
+        FOREIGN KEY(clientId) REFERENCES client(clientId),
+        FOREIGN KEY(clientAddress) REFERENCES client(clientAddress)
+        FOREIGN KEY(idNip) REFERENCES company(idNip),
+        FOREIGN KEY(deliveryId) REFERENCES client(deliveryId),
+        FOREIGN KEY(paymentId) REFERENCES client(paymentId)
+		)''')
+
+conn.close()
