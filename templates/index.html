@@ -15,8 +15,8 @@
             </button>
             <div class="dropdown-content" id="myDropdown">
                    <a href="/tmp">Kategorie</a>
-                {% for link in category %}
-                <a href="/tmp">Link 1</a>
+                {% for link in categoryData %}
+                <a href="/tmp">{{link[1]}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -28,8 +28,8 @@
             </button>
             <div class="dropdown-content" id="myDropdown">
                    <a href="/tmp">Rodzaje</a>
-                {% for link in rodzaj %}
-                <a href="/tmp">Link 1</a>
+                {% for link in typeData %}
+                <a href="/tmp">{{link[1]}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -41,8 +41,8 @@
             </button>
             <div class="dropdown-content" id="myDropdown">
                    <a href="/tmp">Producenci</a>
-                {% for link in producent %}
-                <a href="/tmp">Link 1</a>
+                {% for link in manuData %}
+                <a href="/tmp">{{link[1]}}</a>
                 {% endfor %}
             </div>
         </div>
