@@ -97,9 +97,20 @@ def cart():
 def accountProfil():
     return render_template('index.html')
 
+
 @app.route("/account/orders")
 def accountOrders():
     return render_template('index.html')
+
+
+@app.route("/loginForm")
+def loginForm():
+    return render_template('login.html')
+
+
+@app.route("/registerForm")
+def registerForm():
+    return render_template('register.html')
 
 
 if __name__ == '__main__':

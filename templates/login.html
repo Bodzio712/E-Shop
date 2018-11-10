@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }} />
+    <title>Logowanie</title>
+</head>
+<body>
+<!-- TODO: Dodać navbar -->
+<form action="/login" method="POST">
+    <p>Email: <input type="text" name="email"></p>
+    <p>Hasło: <input type="password" name="password"></p>
+	<p><input type="submit"></p>
+</form>
+	<a href="/registerForm">Rejestracja</a>
+</body>
+</html>
