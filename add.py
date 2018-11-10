@@ -21,14 +21,14 @@ def add():
                     (23, 'Motul'),
                     (24, 'Sachs'),
                     ]
-    product = [(1, "produkt1", "Opis1", 20, 21, 21, 1, 1, 100, 150),
-               (2, "produkt2", "Opis2", 21, 22, 22, 2, 2, 200, 220),
+    product = [(3, "produkt3", "Opis3", 20, 21, 21, 3, 3, 100, 150),
+               (4, "produkt4", "Opis4", 21, 22, 22, 4, 4, 300, 220),
 
             ]
-#    c.executemany('INSERT INTO type VALUES (?,?)', type)
-#    c.executemany('INSERT INTO category VALUES (?,?)', category)
-#   c.executemany('INSERT INTO manufacturer VALUES (?,?)', manufacturer)
-#    c.executemany('INSERT INTO product VALUES (?,?,?,?,?,?,?,?,?,?)', product)
+#c.executemany('INSERT INTO type VALUES (?,?)', type)
+ #   c.executemany('INSERT INTO category VALUES (?,?)', category)
+ #   c.executemany('INSERT INTO manufacturer VALUES (?,?)', manufacturer)
+    c.executemany('INSERT INTO product VALUES (?,?,?,?,?,?,?,?,?,?)', product)
     conn.commit()
 
 add()

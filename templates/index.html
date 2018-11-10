@@ -93,14 +93,33 @@
 		<h2>Description</h2>
 		<p>{{row[3]}}</p>
 	</div>
-    {% endfor %}
+
 	<div id="addToCart">
-		<a href="/addToCart?productId={{request.args.get('productId')}}">Add to Cart</a>
+		<a href="/addToCart?productId={{row[0]}}">Add to Cart</a>
 	</div>
+    {% endfor %}
 </div>
 {% endif %}
 
-
+{% if products %}
+<div id="cartItems">
+	<h2>Shopping Cart</h2>
+	<div id="tableItems">
+		{% for row in products %}
+		<div>
+			<div id="itemName">
+				<span id="itemNameTag">{{row[1]}}</span><br>
+				In stock<br>
+			</div>
+			<div id="itemPrice">
+				${{row[2]}}
+			</div>
+            <a href="/removeFromCart?productId={{row[0]}}">Remove</a>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
 
 </body>
 </html>

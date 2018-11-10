@@ -5,6 +5,8 @@ import sqlite3
 import os
 import werkzeug
 from sqlalchemy import *
+from sqlalchemy.orm import *
+
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
@@ -36,7 +38,8 @@ def rodzaje():
     prod_sel = select([product]).where(product.c.typeId == typeId)
     prodData = engine.execute(prod_sel).fetchall()
     print(prodData)
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, productData = prodData)
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData,
+                           productData = prodData)
 
 @app.route("/producenci")
 def producenci():
@@ -54,9 +57,39 @@ def kategorie():
     product = Table('product', metadata, autoload=True, autoload_with=engine)
     prod_sel = select([product]).where(product.c.categoryId == kategoriaId)
     prodData = engine.execute(prod_sel).fetchall()
-    print(prodData)
     return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData,
                            productData=prodData)
+
+@app.route("/addToCart")
+def addToCart():
+        productId = int(request.args.get('productId'))
+        clientId = 99
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+  #          cur.execute("SELECT userId FROM users WHERE email = '" + session['email'] + "'")
+  #          userId = cur.fetchone()[0]
+  #          try:
+            cur.execute("INSERT INTO cart (clientId, productId) VALUES (?, ?)", (clientId, productId))
+            conn.commit()
+#                msg = "Added successfully"
+#            except:
+#                conn.rollback()
+#                msg = "Error occured"
+        conn.close()
+        return redirect(url_for('root'))
+
+@app.route("/cart")
+def cart():
+#    if 'email' not in session:
+#        return redirect(url_for('loginForm'))
+#    loggedIn, firstName, noOfItems = getLoginDetails()
+#    email = session['email']
+    product = Table('product', metadata, autoload=True, autoload_with=engine)
+    cart = Table('cart', metadata, autoload=True, autoload_with=engine)
+    meta = select([product, cart], product.c.productId == cart.c.productId)
+    cp_data = engine.execute(meta).fetchall()
+    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData,
+                           products=cp_data)
 
 
 
@@ -66,10 +99,6 @@ def accountProfil():
 
 @app.route("/account/orders")
 def accountOrders():
-    return render_template('index.html')
-
-@app.route("/cart")
-def cart():
     return render_template('index.html')
 
 

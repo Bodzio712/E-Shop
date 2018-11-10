@@ -136,4 +136,11 @@ conn.execute('''CREATE TABLE orders
         FOREIGN KEY(paymentId) REFERENCES client(paymentId)
 		)''')
 
+conn.execute('''CREATE TABLE cart
+		(clientId INTEGER,
+		productId INTEGER,
+		FOREIGN KEY(clientId) REFERENCES client(clientId),
+		FOREIGN KEY(productId) REFERENCES product(productId)
+		)''')
+
 conn.close()
