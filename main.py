@@ -27,26 +27,38 @@ catData = engine.execute(cats_sel).fetchall()
 
 @app.route("/")
 def root():
-    loggedIn = "aaa"
-    firstName = "bbb"
-    noOfItems = "ccc"
-
-    return render_template('index.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=catData, typeData = typeData, manuData = manuData)
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData)
 
 @app.route("/rodzaje")
 def rodzaje():
-    return render_template('index.html')
+    typeId = request.args.get("typeId")
+    product = Table('product', metadata, autoload=True, autoload_with=engine)
+    prod_sel = select([product]).where(product.c.typeId == typeId)
+    prodData = engine.execute(prod_sel).fetchall()
+    print(prodData)
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, productData = prodData)
 
 @app.route("/producenci")
 def producenci():
-    return render_template('index.html')
-
+    producentId = request.args.get("manuId")
+    product = Table('product', metadata, autoload=True, autoload_with=engine)
+    prod_sel = select([product]).where(product.c.manufacturerId == producentId)
+    prodData = engine.execute(prod_sel).fetchall()
+    print(prodData)
+    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData,
+                           productData=prodData)
 
 @app.route("/kategorie")
 def kategorie():
+    kategoriaId = request.args.get("catId")
+    product = Table('product', metadata, autoload=True, autoload_with=engine)
+    prod_sel = select([product]).where(product.c.categoryId == kategoriaId)
+    prodData = engine.execute(prod_sel).fetchall()
+    print(prodData)
+    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData,
+                           productData=prodData)
 
 
-    return render_template('index.html')
 
 @app.route("/account/profil")
 def accountProfil():

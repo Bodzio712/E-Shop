@@ -29,7 +29,7 @@ conn.execute('''CREATE TABLE product
 		priceNet REAL,
         priceGross REAL,
         FOREIGN KEY(typeId) REFERENCES type(typeId),
-		FOREIGN KEY(categoryId) REFERENCES categorie(categoryId),
+		FOREIGN KEY(categoryId) REFERENCES category(categoryId),
         FOREIGN KEY(manufacturerId) REFERENCES manufacturer(manufacturerId),
         FOREIGN KEY(warrantyId) REFERENCES warranty(warrantyId),
         FOREIGN KEY(taxId) REFERENCES taxation(taxId)

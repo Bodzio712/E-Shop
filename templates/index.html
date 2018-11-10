@@ -14,9 +14,8 @@
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
-                   <a href="/tmp">Kategorie</a>
                 {% for link in categoryData %}
-                <a href="/tmp">{{link[1]}}</a>
+                <a href="/kategorie?catId={{link[0]}}">{{link[1]}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -27,9 +26,8 @@
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
-                   <a href="/tmp">Rodzaje</a>
                 {% for link in typeData %}
-                <a href="/tmp">{{link[1]}}</a>
+                <a href="/rodzaje?typeId={{link[0]}}">{{link[1]}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -40,9 +38,8 @@
                 <i class="fa fa-caret-down" ></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
-                   <a href="/tmp">Producenci</a>
                 {% for link in manuData %}
-                <a href="/tmp">{{link[1]}}</a>
+                <a href="/producenci?manuId={{link[0]}}">{{link[1]}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -69,6 +66,41 @@
 	    </div>
 
     </div>
+
+
+{% if productData%}
+<div id="display">
+	<div id="productName">
+		<h1>{{productData[1]}}</h1>
+	</div>
+{% for row in productData%}
+	<div id="productDescription">
+		<h2>Details</h2>
+		<table id="descriptionTable">
+			<tr>
+				<td>Name</td>
+				<td>{{row[1]}}</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>${{row[2]}}</td>
+			</tr>
+			<tr>
+				<td>Stock</td>
+				<td>{{row[5]}}</td>
+			</tr>
+		</table>
+		<h2>Description</h2>
+		<p>{{row[3]}}</p>
+	</div>
+    {% endfor %}
+	<div id="addToCart">
+		<a href="/addToCart?productId={{request.args.get('productId')}}">Add to Cart</a>
+	</div>
+</div>
+{% endif %}
+
+
 
 </body>
 </html>
