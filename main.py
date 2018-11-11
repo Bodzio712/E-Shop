@@ -2,27 +2,38 @@
 from flask import *
 from peewee import *
 import sqlite3
+from sqlalchemy.orm import *
 import os
 import werkzeug
 from sqlalchemy import *
+from sqlalchemy.ext.automap import *
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
 
 #dane do navbara
 engine = create_engine("sqlite:///database.db")
-metadata = MetaData()
+metadata = MetaData(engine, reflect=True)
 
-type = Table('type', metadata, autoload=True, autoload_with=engine)
+type = metadata.tables['type']
+manu = metadata.tables['manufacturer']
+cats = metadata.tables['category']
+product = metadata.tables['product']
+cart = metadata.tables['cart']
+
 type_sel = select([type])
-manu = Table('manufacturer', metadata, autoload=True, autoload_with=engine)
 manu_sel = select([manu])
-cats = Table('category', metadata, autoload=True, autoload_with=engine)
 cats_sel = select([cats])
+product_sel = select([product])
+cart = select([cart])
 
 typeData = engine.execute(type_sel).fetchall()
 manuData = engine.execute(manu_sel).fetchall()
 catData = engine.execute(cats_sel).fetchall()
+productData = engine.execute(product_sel).fetchall()
+cartData = engine.execute(cart).fetchall()
+for row in productData:
+    print(row.productId)
 
 
 @app.route("/")
@@ -32,10 +43,12 @@ def root():
 @app.route("/rodzaje")
 def rodzaje():
     typeId = request.args.get("typeId")
-    product = Table('product', metadata, autoload=True, autoload_with=engine)
+#    product = Table('product', metadata, autoload=True, autoload_with=engine)
     prod_sel = select([product]).where(product.c.typeId == typeId)
     prodData = engine.execute(prod_sel).fetchall()
     print(prodData)
+    #x = json.dumps([dict(r) for r in prodData])
+    #print(x)
     return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, productData = prodData)
 
 @app.route("/producenci")
@@ -62,22 +75,88 @@ def kategorie():
 def addToCart():
         productId = int(request.args.get('productId'))
         clientId = 99
-        with sqlite3.connect('database.db') as conn:
-            cur = conn.cursor()
+        cart = Table('cart', metadata, autoload=True, autoload_with=engine)
+        conn = engine.connect()
+        ins = cart.insert().values(clientId = clientId, productId=productId)
+        conn.execute(ins)
+        # commit the record the database
+
+#        with sqlite3.connect('database.db') as conn:
+#            cur = conn.cursor()
   #          cur.execute("SELECT userId FROM users WHERE email = '" + session['email'] + "'")
   #          userId = cur.fetchone()[0]
   #          try:
-            cur.execute("INSERT INTO cart (clientId, productId) VALUES (?, ?)", (clientId, productId))
-            conn.commit()
+#            cur.execute("INSERT INTO cart (clientId, productId) VALUES (?, ?)", (clientId, productId))
+#            conn.commit()
 #                msg = "Added successfully"
 #            except:
 #                conn.rollback()
 #                msg = "Error occured"
-        conn.close()
+#        conn.close()
         return redirect(url_for('root'))
 
 @app.route("/cart")
 def cart():
+#    if 'email' not in session:
+#        return redirect(url_for('loginForm'))
+#    loggedIn, firstName, noOfItems = getLoginDetails()
+#    email = session['email']
+    product = Table('product', metadata, autoload=True, autoload_with=engine)
+    cart = Table('cart', metadata, autoload=True, autoload_with=engine)
+    meta = select([product, cart], cart.c.productId == product.c.productId)
+    cp_data = engine.execute(meta).fetchall()
+    print(cp_data)
+    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData,
+                           products=cp_data)
+
+@app.route("/placeOrder")
+def placeOrder():
+ with engine.connect() as connection:
+    product = metadata.tables['product']
+    cart = metadata.tables['cart']
+    orders = metadata.tables['orders']
+
+    join_obj = product.join(cart, product.c.productId == cart.c.productId)
+    join_sel = select([product.c.productId, product.c.productName]).select_from(join_obj)#select statement
+    prod_data = connection.execute(join_sel)#fetch data
+    #stworz tabele orders i zapisz do bazy\
+
+    for row in prod_data:
+        ins = orders.insert().values(
+        productId=row.productId,
+        productName=row.productName,
+        categoryId=1,
+        clientId=11,
+        clientAddress='adress',
+        idNip=21,
+        deliveryId=21,
+        paymentId=21,
+        date='21.10.2018',
+        quantity=10,
+        valueNet=99.9,
+        valueGross=77.8)
+        connection.execute(ins)
+
+
+    d = delete(cart)
+    engine.execute(d)
+
+    return render_template("index.html")
+
+
+@app.route("/removeCart")
+def removeFromCart():
+
+    removeId = request.args.get("productId")
+    cart = Table('cart', metadata, autoload=True, autoload_with=engine)
+    #meta = delete([cart]).where(cart.c.productId == removeId)
+    #cart.query.filter(productId = removeId).delete()
+    d = delete(cart, cart.c.productId == removeId)
+    engine.execute(d)
+    return redirect(url_for('cart'))
+
+@app.route("/tmp")
+def cart2():
 #    if 'email' not in session:
 #        return redirect(url_for('loginForm'))
 #    loggedIn, firstName, noOfItems = getLoginDetails()
@@ -89,8 +168,6 @@ def cart():
     return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData,
                            products=cp_data)
 
-
-
 @app.route("/account/profil")
 def accountProfil():
     return render_template('index.html')
@@ -98,26 +175,25 @@ def accountProfil():
 
 @app.route("/account/orders")
 def accountOrders():
-    return render_template('index.html')
+    orders = metadata.tables['orders']
+    ord_sel = select([orders])
 
-@app.route("/loginForm")
-def loginForm():
-    return render_template('login.html')
+    productData = engine.execute(ord_sel).fetchall()
+    for row in productData:
+        print(row)
 
+    return render_template("index.html", orders=productData)
 
-@app.route("/registerForm")
-def registerForm():
-    return render_template('register.html')
-
-
-@app.route("/loginForm")
-def loginForm():
-    return render_template('login.html')
 
 
 @app.route("/registerForm")
 def registerForm():
     return render_template('register.html')
+
+
+@app.route("/loginForm")
+def loginForm():
+    return render_template('login.html')
 
 
 if __name__ == '__main__':

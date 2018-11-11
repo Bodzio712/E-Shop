@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<meta charset="UTF-8">
 <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }} />
 </head>
 <body>
@@ -27,7 +28,7 @@
             </button>
             <div class="dropdown-content" id="myDropdown">
                 {% for link in typeData %}
-                <a href="/rodzaje?typeId={{link[0]}}">{{link[1]}}</a>
+                <a href="/rodzaje?typeId={{link[0]}}">{{ link.name}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -114,12 +115,35 @@
 			<div id="itemPrice">
 				${{row[2]}}
 			</div>
-            <a href="/removeFromCart?productId={{row[0]}}">Remove</a>
+            <a href="/removeCart?productId={{row[0]}}">Remove</a>
+		</div>
+		{% endfor %}
+	</div>
+    <a href="/placeOrder">Zamów</a>
+</div>
+{% endif %}
+
+
+
+{% if orders %}
+<div id="cartItems">
+	<h2>Shopping Cart</h2>
+	<div id="tableItems">
+		{% for link in orders %}
+		<div>
+			<div id="itemName">
+				<span id="itemNameTag">{{link.orderId}}</span><br>
+				<span id="itemNameTag">{{link.productId}}</span><br>
+                <span id="itemNameTag">{{link.productName}}</span><br>
+                <span id="itemNameTag">{{link.categoryId}}</span><br>
+                <span id="itemNameTag">{{link.valueNet}}</span><br>
+			</div>
 		</div>
 		{% endfor %}
 	</div>
 </div>
 {% endif %}
+
 
 </body>
 </html>

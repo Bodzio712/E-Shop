@@ -4,7 +4,7 @@ import sqlite3
 conn = sqlite3.connect('database.db')
 
 # Create table
-conn.execute('''CREATE TABLE client 
+conn.execute('''CREATE TABLE IF NOT EXISTS client 
 		(clientId INTEGER PRIMARY KEY, 
         firstName TEXT,
 		lastName TEXT,
@@ -17,7 +17,7 @@ conn.execute('''CREATE TABLE client
         FOREIGN KEY(paymentId) REFERENCES payment(paymentId)
 		)''')
 
-conn.execute('''CREATE TABLE product
+conn.execute('''CREATE TABLE IF NOT EXISTS product
 		(productId INTEGER PRIMARY KEY,
 		productName TEXT,
         description TEXT,
@@ -35,30 +35,30 @@ conn.execute('''CREATE TABLE product
         FOREIGN KEY(taxId) REFERENCES taxation(taxId)
 		)''')
 
-conn.execute('''CREATE TABLE category
+conn.execute('''CREATE TABLE IF NOT EXISTS category
 		(categoryId INTEGER PRIMARY KEY,
 		name TEXT
 		)''')
 
 
-conn.execute('''CREATE TABLE type
+conn.execute('''CREATE TABLE IF NOT EXISTS type
         (typeId INTEGER PRIMARY KEY,
         name TEXT
         )''')
 
-conn.execute('''CREATE TABLE manufacturer
+conn.execute('''CREATE TABLE IF NOT EXISTS manufacturer
         (manufacturerId INTEGER PRIMARY KEY,
         name TEXT
         )''')
 
-conn.execute('''CREATE TABLE warranty
+conn.execute('''CREATE TABLE IF NOT EXISTS warranty
         (warrantyId INTEGER PRIMARY KEY,
         warranty TEXT,
         duration INTEGER,
         resignationTime INTEGER
         )''')
 
-conn.execute('''CREATE TABLE taxation
+conn.execute('''CREATE TABLE IF NOT EXISTS taxation
         (taxId INTEGER PRIMARY KEY,
         taxPercentage REAL,
         taxBase INTEGER,
@@ -66,7 +66,7 @@ conn.execute('''CREATE TABLE taxation
         discountBase
         )''')
 
-conn.execute('''CREATE TABLE errorLog
+conn.execute('''CREATE TABLE IF NOT EXISTS errorLog
         (errorId INTEGER PRIMARY KEY,
         date TEXT,
         description TEXT,
@@ -75,18 +75,18 @@ conn.execute('''CREATE TABLE errorLog
         session TEXT
         )''')
 
-conn.execute('''CREATE TABLE payment
+conn.execute('''CREATE TABLE IF NOT EXISTS payment
 		(paymentId INTEGER PRIMARY KEY,
 		paymentType TEXT
 		)''')
 
-conn.execute('''CREATE TABLE delivery
+conn.execute('''CREATE TABLE IF NOT EXISTS delivery
 		(deliveryId INTEGER PRIMARY KEY,
 		deliveryType TEXT,
         duration TEXT
 		)''')
 
-conn.execute('''CREATE TABLE warehouse
+conn.execute('''CREATE TABLE IF NOT EXISTS warehouse
 		(warehouseId INTEGER PRIMARY KEY,
 		name TEXT,
         address TEXT,
@@ -94,7 +94,7 @@ conn.execute('''CREATE TABLE warehouse
         FOREIGN KEY(idNip) REFERENCES company(idNip)
 		)''')
 
-conn.execute('''CREATE TABLE company
+conn.execute('''CREATE TABLE IF NOT EXISTS company
 		(idNip INTEGER PRIMARY KEY,
         regon INTEGER,
         krs INTEGER,
@@ -104,7 +104,7 @@ conn.execute('''CREATE TABLE company
         email TEXT
 		)''')
 
-conn.execute('''CREATE TABLE availability
+conn.execute('''CREATE TABLE IF NOT EXISTS availability
 		(warehouseId INTEGER,
         productId INTEGER,
 		state TEXT,
@@ -112,7 +112,7 @@ conn.execute('''CREATE TABLE availability
         FOREIGN KEY(productId) REFERENCES product(productId)
 		)''')
 
-conn.execute('''CREATE TABLE orders
+conn.execute('''CREATE TABLE IF NOT EXISTS orders
 		(orderID INTEGER PRIMARY KEY,
 		productId INTEGER,
         productName TEXT,
@@ -136,7 +136,7 @@ conn.execute('''CREATE TABLE orders
         FOREIGN KEY(paymentId) REFERENCES client(paymentId)
 		)''')
 
-conn.execute('''CREATE TABLE cart
+conn.execute('''CREATE TABLE IF NOT EXISTS cart
 		(clientId INTEGER,
 		productId INTEGER,
 		FOREIGN KEY(clientId) REFERENCES client(clientId),
