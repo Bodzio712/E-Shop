@@ -6,7 +6,69 @@
     <title>Logowanie</title>
 </head>
 <body>
-<!-- TODO: Dodać navbar -->
+<!-- Navbar z buttonami-->
+
+    <div class="navbar">
+
+         <!-- Kategorie-->
+        <div class="dropdown">
+            <button class="dropbtn" >Kategorie
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="myDropdown">
+                {% for link in categoryData %}
+                <a href="/kategorie?catId={{link[0]}}">{{link[1]}}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Rodzaje-->
+        <div class="dropdown">
+            <button class="dropbtn">Rodzaje
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="myDropdown">
+                {% for link in typeData %}
+                <a href="/rodzaje?typeId={{link[0]}}">{{ link.name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Producenci-->
+        <div class="dropdown">
+            <button class="dropbtn">Producenci
+                <i class="fa fa-caret-down" ></i>
+            </button>
+            <div class="dropdown-content" id="myDropdown">
+                {% for link in manuData %}
+                <a href="/producenci?manuId={{link[0]}}">{{link[1]}}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Profil-->
+        <div class="dropdown">
+            <button class="dropbtn">ProfilOrderRight
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="myDropdown">
+                <a href="/account/orders">Zamowienia</a>
+			    <a href="/account/profil">Profil</a>
+                <a href="/account/logout">Wyloguj</a>
+            </div>
+        </div>
+
+        <!-- Koszyk-->
+        <div id="cartId">
+		<a class="link" href="/cart">
+			<button class="cartClass">
+			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
+                {{noOfItems}}
+			</button>
+		</a>
+	    </div>
+
+    </div>
 <form action="/login" method="POST">
     <p>Email: <input type="text" name="email"></p>
     <p>Hasło: <input type="password" name="password"></p>
