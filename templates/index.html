@@ -96,8 +96,8 @@
 		<p>{{row[3]}}</p>
 		<div>
 		<form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
-			<p>Liczba <input type = "number" name = "liczba" /></p>
-			<p><input type = "hidden" value = {{row[0]}} /></p>
+			<p>Liczba <input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></p>
+			<p><input type = "hidden"  value = {{row[0]}} /></p>
 			<input type="submit" value="Add to cart!"/>
 		</form>
 		</div>
