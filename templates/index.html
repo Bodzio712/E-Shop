@@ -11,7 +11,7 @@
 
          <!-- Kategorie-->
         <div class="dropdown">
-            <button class="dropbtn" onclick="location.href='/kategorie'">Kategorie
+            <button class="dropbtn" >Kategorie
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
@@ -23,7 +23,7 @@
 
         <!-- Rodzaje-->
         <div class="dropdown">
-            <button class="dropbtn" onclick="location.href='/rodzaje'">Rodzaje
+            <button class="dropbtn">Rodzaje
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
@@ -35,7 +35,7 @@
 
         <!-- Producenci-->
         <div class="dropdown">
-            <button class="dropbtn" onclick="location.href='/producenci'">Producenci
+            <button class="dropbtn">Producenci
                 <i class="fa fa-caret-down" ></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
@@ -62,6 +62,7 @@
 		<a class="link" href="/cart">
 			<button class="cartClass">
 			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
+                {{noOfItems}}
 			</button>
 		</a>
 	    </div>
@@ -93,11 +94,15 @@
 		</table>
 		<h2>Description</h2>
 		<p>{{row[3]}}</p>
+		<div>
+		<form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
+			<p>Liczba <input type = "number" name = "liczba" /></p>
+			<p><input type = "hidden" value = {{row[0]}} /></p>
+			<input type="submit" value="Add to cart!"/>
+		</form>
+		</div>
 	</div>
 
-	<div id="addToCart">
-		<a href="/addToCart?productId={{row[0]}}">Add to Cart</a>
-	</div>
     {% endfor %}
 </div>
 {% endif %}
@@ -113,8 +118,11 @@
 				In stock<br>
 			</div>
 			<div id="itemPrice">
-				${{row[2]}}
+				${{row[0]}}
+				${{row[1]}}
+				${{row.quantity}}
 			</div>
+
             <a href="/removeCart?productId={{row[0]}}">Remove</a>
 		</div>
 		{% endfor %}
