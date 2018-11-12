@@ -250,7 +250,30 @@ def accountOrders():
 def registerForm():
     return render_template('register.html')
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+            if request.method == 'POST':
+                # Parse form data
+                password = request.form['password']
+                email = request.form['email']
+                firstName = request.form['firstName']
+                lastName = request.form['lastName']
+                address = request.form['address']
+                tel = request.form['phone']
 
+                con = engine.connect()
+                client = metadata.tables['client']
+                client_insert = client.insert().values(
+                    firstName=firstName,
+                    lastName=lastName,
+                    clientAddress=address,
+                    email=email,
+                    phone=tel,
+                    deliveryId = 1,
+                    paymentId = 1)
+                save = con.execute(client_insert)
+                con.close()
+            return render_template("index.html")
 @app.route("/loginForm")
 def loginForm():
     return render_template('login.html')
