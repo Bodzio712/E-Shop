@@ -62,3 +62,7 @@
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+input[type="number"] {
+   width:40px;
+}
