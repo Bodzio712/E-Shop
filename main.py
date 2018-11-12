@@ -276,9 +276,21 @@ def accountOrders():
 
 
 
-@app.route("/registerForm", methods = ['GET', 'POST'])
+@app.route("/account/registerForm", methods = ['GET', 'POST'])
 def registerForm():
-    return render_template('register.html')
+    item_no = item_number()
+    con = engine.connect()
+    try:
+        product = metadata.tables['product']
+        meta = select([product])
+        products = con.execute(meta)
+    except Exception as e:
+        con.close()
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+    con.close()
+    typeData, manuData, catData = xyz()
+    return render_template('register.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -308,11 +320,23 @@ def register():
                     logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
                 con.close()
             return render_template("index.html")
-@app.route("/loginForm")
+@app.route("/account/loginForm")
 def loginForm():
-    return render_template('login.html')
+    item_no = item_number()
+    con = engine.connect()
+    try:
+        product = metadata.tables['product']
+        meta = select([product])
+        products = con.execute(meta)
+    except Exception as e:
+        con.close()
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+    con.close()
+    typeData, manuData, catData = xyz()
+    return render_template('login.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
 
-@app.route("/logout")
+
+@app.route("/account/logout")
 def logout():
     session.pop('email', None)
     return redirect(url_for('root'))
