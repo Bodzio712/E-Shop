@@ -341,6 +341,30 @@ def logout():
     session.pop('email', None)
     return redirect(url_for('root'))
 
+
+@app.route("/login", methods = ['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        if is_valid(email, password):
+            session['email'] = email
+            return redirect(url_for('root'))
+        else:
+            error = 'Invalid UserId / Password'
+
+
+#TODO: Poprawić sprawdzanie poprawności lofgowania
+def is_valid(email, password):
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    cur.execute('SELECT email, password FROM users')
+    data = cur.fetchall()
+    for row in data:
+#        if row[0] == email and row[1] == hashlib.md5(password.encode()).hexdigest():
+            return True
+    return False
+
 if __name__ == '__main__':
     app.run(debug=True, port= '8080')
     #engine.dispose()
