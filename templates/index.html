@@ -70,57 +70,31 @@
 
     </div>
 
-
 {% if productData%}
-{% for row in productData%}
-    <h1>{{ row[1]}}</h1>
-	<div id="productDescription">
-		<h2>Opis</h2>
-		<table id="descriptionTable">
-			<tr>
-				<td>Nazwa</td>
-				<td>{{row[1]}}</td>
-			</tr>
-			<tr>
-				<td>Opis</td>
-				<td>{{row[2]}}</td>
-			</tr>
-            <tr>
-				<td>Cena netto</td>
-				<td>${{row[8]}}</td>
-			</tr>
-            <tr>
-				<td>Cena brutto</td>
-				<td>${{row[9]}}</td>
-			</tr>
-		</table>
-    </div>
-    <div id="accessibility">
-		<h2>Dostępność</h2>
-        	<table id="descriptionTable">
-                <!-- Zakomentowane, ponieważ row[3] to nie liczba dostępnych sztuk
-                <tr>
-                    <td>Stan magazynowy:</td>
-                    <td>{{row[3]}}</td>
-                </tr>
-                -->
-                    <form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
-                        <tr>
-                            <td>Zamawiana liczba sztuk:</td>
-                            <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
-                        </tr>
-                        <tr>
-                            <td><input type="submit" value="Dodaj do koszyka"/></td>
-                        </tr>
-                            <input type = "hidden"  value = {{row[0]}} />
-                    </form>
-                </table>
-    </div>
-    <!-- Odstęp przed nowym rekordem -->
-    <br><br><br>
-
-{% endfor %}
-{% endif %}
+    <h1>Lista produktów</h1>
+    <table id="productList">
+    <tr>
+        <td>Nazwa</td>
+        <td>Opis</td>
+        <td>Cena netto</td>
+        <td>Cena brutto</td>
+        <td>Liczba zam. sztuk</td>
+    </tr>
+    {% for row in productData%}
+        <tr>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[8] }}</td>
+            <td>{{ row[9] }}</td>
+            <form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
+                <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
+                <td><input type="submit" value="Dodaj do koszyka"/></td>
+                <input type = "hidden"  value = {{row[0]}} />
+            </form>
+        </tr>
+    {% endfor %}
+    </table>
+{%  endif %}
 
 {% if products %}
 <div id="cartItems">
