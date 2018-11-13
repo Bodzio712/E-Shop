@@ -72,40 +72,54 @@
 
 
 {% if productData%}
-<div id="display">
-	<div id="productName">
-		<h1>{{productData[1]}}</h1>
-	</div>
 {% for row in productData%}
+    <h1>{{ row[1]}}</h1>
 	<div id="productDescription">
-		<h2>Details</h2>
+		<h2>Opis</h2>
 		<table id="descriptionTable">
 			<tr>
-				<td>Name</td>
+				<td>Nazwa</td>
 				<td>{{row[1]}}</td>
 			</tr>
 			<tr>
-				<td>Price</td>
-				<td>${{row[2]}}</td>
+				<td>Opis</td>
+				<td>{{row[2]}}</td>
 			</tr>
-			<tr>
-				<td>Stock</td>
-				<td>{{row[5]}}</td>
+            <tr>
+				<td>Cena netto</td>
+				<td>${{row[8]}}</td>
+			</tr>
+            <tr>
+				<td>Cena brutto</td>
+				<td>${{row[9]}}</td>
 			</tr>
 		</table>
-		<h2>Description</h2>
-		<p>{{row[3]}}</p>
-		<div>
-		<form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
-			<p>Liczba <input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></p>
-			<p><input type = "hidden"  value = {{row[0]}} /></p>
-			<input type="submit" value="Add to cart!"/>
-		</form>
-		</div>
-	</div>
+    </div>
+    <div id="accessibility">
+		<h2>Dostępność</h2>
+        	<table id="descriptionTable">
+                <!-- Zakomentowane, ponieważ row[3] to nie liczba dostępnych sztuk
+                <tr>
+                    <td>Stan magazynowy:</td>
+                    <td>{{row[3]}}</td>
+                </tr>
+                -->
+                    <form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
+                        <tr>
+                            <td>Zamawiana liczba sztuk:</td>
+                            <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
+                        </tr>
+                        <tr>
+                            <td><input type="submit" value="Dodaj do koszyka"/></td>
+                        </tr>
+                            <input type = "hidden"  value = {{row[0]}} />
+                    </form>
+                </table>
+    </div>
+    <!-- Odstęp przed nowym rekordem -->
+    <br><br><br>
 
-    {% endfor %}
-</div>
+{% endfor %}
 {% endif %}
 
 {% if products %}

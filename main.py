@@ -83,7 +83,7 @@ def root():
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
     con.close()
     typeData, manuData, catData = xyz()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=products)
 
 @app.route("/rodzaje")
 def rodzaje():
@@ -99,7 +99,7 @@ def rodzaje():
         con.close()
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
     con.close()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData = prodData)
+    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData)
 
 @app.route("/producenci")
 def producenci():

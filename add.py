@@ -20,9 +20,11 @@ def add():
                     (22, 'Castrol'),
                     (23, 'Motul'),
                     (24, 'Sachs'),
+                    (25, 'Volkswagen')
                     ]
     product = [(3, "produkt3", "Opis3", 20, 21, 21, 3, 3, 100, 150),
                (4, "produkt4", "Opis4", 21, 22, 22, 4, 4, 300, 220),
+               (5, "Silnik 1.8 ADR", "Silnik do Audi A4 B5", 20, 25, 25, 3, 3, 100, 150)
              ]
     state = [(1, "produkt1", 111),
                (2, "produkt2", 222),
