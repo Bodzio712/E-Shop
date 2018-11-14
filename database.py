@@ -13,6 +13,7 @@ conn.execute('''CREATE TABLE IF NOT EXISTS client
         phone TEXT,
 		deliveryId INTEGER,
         paymentId INTEGER,
+        password TEXT
 		FOREIGN KEY(deliveryId) REFERENCES delivery(deliveryId),
         FOREIGN KEY(paymentId) REFERENCES payment(paymentId)
 		)''')
@@ -137,7 +138,8 @@ conn.execute('''CREATE TABLE IF NOT EXISTS orders
 		)''')
 
 conn.execute('''CREATE TABLE IF NOT EXISTS cart
-		(clientId INTEGER,
+		(cartId INTEGER PRIMARY KEY,
+		clientId INTEGER,
 		productId INTEGER,
 		quantity INTEGER,
 		FOREIGN KEY(clientId) REFERENCES client(clientId),
