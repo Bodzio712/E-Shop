@@ -77,7 +77,7 @@
 		<a class="link" href="/cart">
 			<button class="cartClass">
 			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
-                {{noOfItems}}
+                <p style="color: white"> {{noOfItems}} </p>
 			</button>
 		</a>
 	    </div>
@@ -205,7 +205,9 @@
           <div class="total-value final-value" id="basket-total">130.00</div>
         </div>
         <div class="summary-checkout">
-          <button class="checkout-cta">Zapłać</button>
+            <form action="/placeOrder" href="/placeOrder">
+                <input type="submit" value="Zapłać" class="checkout-cta"/>
+            </form>
         </div>
       </div>
     </aside>
