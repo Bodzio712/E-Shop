@@ -1,8 +1,18 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href={{ url_for('static', filename='css/style.css') }} />
+	<meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- Remember to include jQuery :) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+<!-- jQuery Modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 </head>
 <body>
 <!-- Navbar z buttonami-->
@@ -45,6 +55,12 @@
             </div>
         </div>
 
+		{% if not loggedIn %}
+		<div class="dropdown">
+		<a class="dropbtn" href="/loginForm">Sign In</a>
+		</div>
+
+		{% else %}
         <!-- Profil-->
         <div class="dropdown">
             <button class="dropbtn">ProfilOrderRight
@@ -52,9 +68,7 @@
             </button>
             <div class="dropdown-content" id="myDropdown">
                 <a href="/account/orders">Zamowienia</a>
-			    <a href="/account/profil">Profil</a>
-                <a href="/account/loginForm">Zaloguj</a>
-                <a href="/account/logout">Wyloguj</a>
+                <a href="/logout">Wyloguj</a>
             </div>
         </div>
 
@@ -67,8 +81,9 @@
 			</button>
 		</a>
 	    </div>
-
+{% endif %}
     </div>
+
 
 {% if productData%}
     <h1>Lista produktów</h1>
@@ -80,47 +95,35 @@
         <td><b>Cena brutto </b></td>
         <td><b>Liczba zam. sztuk</b></td>
     </tr>
-    {% for row in productData%}
+    	{% for row in productData%}
         <tr>
             <td>{{ row[1] }}</td>
             <td>{{ row[2] }}</td>
             <td>{{ row[8] }}</td>
             <td>{{ row[9] }}</td>
+			{% if loggedIn %}
             <form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
                 <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
                 <td><input type="submit" value="Dodaj do koszyka"/></td>
                 <input type = "hidden"  value = {{row[0]}} />
             </form>
+			{% endif %}
+			<td>
+			<a href="#ex1" rel="modal:open">Open modal</a>
+
+			<div id="ex1" class="modal">
+  				<p>{{ row.productName }} </p>
+			</div>
+			</td>
         </tr>
-    {% endfor %}
+
+
+
+		{% endfor %}
     </table>
 {%  endif %}
 
-
 {% if products %}
-<div id="cartItems">
-	<h2>Koszyk</h2>
-    <table id="productList">
-    <tr>
-        <td><b>Nazwa </b></td>
-        <td><b>Opis </b></td>
-        <td><b>Liczba zam. sztuk</b></td>
-    </tr>
-    {% for row in products %}
-        <tr>
-            <td>{{ row[1] }}</td>
-            <td>{{ row[2] }}</td>
-            <td>{{ row.quantity }}</td>
-            <td><a href="/removeCart?productId={{row[0]}}">Usuń z koszyka</a></td>
-        </tr>
-    {%  endfor %}
-    </table>
-    <a href="/placeOrder">Zamów</a>
-</div>
-{% endif %}
-
-
-{% if orders %}
 <div id="cartItems">
 	<h2>Shopping Cart</h2>
 	<div id="tableItems">
@@ -140,5 +143,85 @@
 {% endif %}
 
 
+
+
+
+
+
+
+{% if products %}
+<main>
+<div class="basket">
+      <div class="basket-labels">
+        <ul>
+          <li class="item item-heading">Item</li>
+          <li class="price"></li>
+          <li class="quantity">Quantity</li>
+          <li class="subtotal">Subtotal</li>
+        </ul>
+      </div>
+		{% for link in products %}
+      <div class="basket-product">
+        <div class="item">
+
+          <div class="product-details">
+            <h1><strong><span class="item-quantity">{{link.quantity}} x </span> {{link.productName}} </strong></h1>
+            <p><strong>Navy, Size 18</strong></p>
+            <p>Product Code - 232321939</p>
+          </div>
+        </div>
+        <div class="price">{{link.valueNet}}</div>
+        <div class="quantity">
+          <input type="number" value="4" min="1" class="quantity-field">
+        </div>
+        <div class="subtotal">104.00</div>
+        <a class="remove" href="/removeCart?cartId={{link.cartId}}">
+          <button>Remove</button>
+        </a>
+      </div>
+  		{% endfor %}
+	</div>
+
+	 <aside>
+      <div class="summary">
+        <div class="summary-total-items"><span class="total-items"></span> Items in your Bag</div>
+        <div class="summary-subtotal">
+          <div class="subtotal-title">Subtotal</div>
+          <div class="subtotal-value final-value" id="basket-subtotal">130.00</div>
+          <div class="summary-promo hide">
+            <div class="promo-title">Promotion</div>
+            <div class="promo-value final-value" id="basket-promo"></div>
+          </div>
+        </div>
+        <div class="summary-delivery">
+          <select name="delivery-collection" class="summary-delivery-selection">
+			  <option value="0" selected="selected">Wybierz dostawę</option>
+             <option value="collection">Collection</option>
+             <option value="first-class">Royal Mail 1st Class</option>
+             <option value="second-class">Royal Mail 2nd Class</option>
+             <option value="signed-for">Royal Mail Special Delivery</option>
+          </select>
+        </div>
+		  <div class="summary-delivery">
+          <select name="delivery-collection" class="summary-delivery-selection">
+              <option value="0" selected="selected">Wybierz płatność</option>
+             <option value="collection">Collection</option>
+             <option value="first-class">Royal Mail 1st Class</option>
+             <option value="second-class">Royal Mail 2nd Class</option>
+             <option value="signed-for">Royal Mail Special Delivery</option>
+          </select>
+        </div>
+        <div class="summary-total">
+          <div class="total-title">Total</div>
+          <div class="total-value final-value" id="basket-total">130.00</div>
+        </div>
+        <div class="summary-checkout">
+          <button class="checkout-cta">Go to Secure Checkout</button>
+        </div>
+      </div>
+    </aside>
+</main>
+{% endif %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
