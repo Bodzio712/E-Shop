@@ -247,6 +247,7 @@ def placeOrder():
         join_sel = select([product.c.productId, product.c.productName]).select_from(join_obj)#select statement
         prod_data = connection.execute(join_sel)#fetch data
         #stworz tabele orders i zapisz do bazy\
+
         for row in prod_data:
             ins = orders.insert().values(
             productId=row.productId,
@@ -315,7 +316,19 @@ def accountOrders():
 
 @app.route("/registerForm", methods = ['GET', 'POST'])
 def registerForm():
-    return render_template('register.html')
+    item_no = item_number()
+    con = engine.connect()
+    try:
+        product = metadata.tables['product']
+        meta = select([product])
+        products = con.execute(meta)
+    except Exception as e:
+        con.close()
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+    con.close()
+    typeData, manuData, catData = xyz()
+    return render_template('register.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -349,7 +362,18 @@ def register():
 
 @app.route("/loginForm", methods=['GET', 'POST'])
 def loginForm():
-    return render_template('login.html')
+    item_no = item_number()
+    con = engine.connect()
+    try:
+        product = metadata.tables['product']
+        meta = select([product])
+        products = con.execute(meta)
+    except Exception as e:
+        con.close()
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+    con.close()
+    typeData, manuData, catData = xyz()
+    return render_template('login.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
 
 def is_valid(email, password):
     con = sqlite3.connect('database.db')
