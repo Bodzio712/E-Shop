@@ -85,66 +85,55 @@
     </div>
 
 
+
 {% if productData%}
-    <h1>Lista produktów</h1>
-    <table id="productList">
-    <tr>
-        <td><b>Nazwa </b></td>
-        <td><b>Opis </b></td>
-        <td><b>Cena netto </b></td>
-        <td><b>Cena brutto </b></td>
-        <td><b>Liczba zam. sztuk</b></td>
-    </tr>
-    	{% for row in productData%}
-        <tr>
-            <td>{{ row[1] }}</td>
-            <td>{{ row[2] }}</td>
-            <td>{{ row[8] }}</td>
-            <td>{{ row[9] }}</td>
-			{% if loggedIn %}
-            <form action="/addToCart?productId={{row[0]}}" method="post" href="/addToCart?productId={{row[0]}}">
-                <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
-                <td><input type="submit" value="Dodaj do koszyka"/></td>
-                <input type = "hidden"  value = {{row[0]}} />
-            </form>
-			{% endif %}
-			<td>
-			<a href="#ex1" rel="modal:open">Open modal</a>
+<div class="basket_1">
+      <div class="basket-labels">
+        <ul>
+          <li class="item item-heading">Nazwa</li>
+          <li class="price">Cena</li>
+          <li class="quantity">Details</li>
+          <li class="producent">Producent</li>
+          <li class="quantity">Ilość</li>
+        </ul>
+      </div>
 
-			<div id="ex1" class="modal">
-  				<p>{{ row.productName }} </p>
-			</div>
-			</td>
-        </tr>
+    {% for link in productData %}
+      <div class="basket-product">
+        <div class="item">
+          <div class="product-details">
+            <h1><strong><span class="item-quantity"> </span> {{link.description}} </strong></h1>
+            <p><strong>{{link.productName}} </strong></p>
+          </div>
+        </div>
+        <div class="price">{{link.priceGross}}</div>
 
 
+        <div class = "quantity">
+            <a href="#ex1" rel="modal:open">Szczegóły</a>
+            <div id="ex1" class="modal">
+                <p>{{ link.productName }} </p>
+            </div>
+        </div>
 
-		{% endfor %}
-    </table>
-{%  endif %}
+        <div class="producent">{{link.manufacturerId}}</div>
 
-{% if products %}
-<div id="cartItems">
-	<h2>Shopping Cart</h2>
-	<div id="tableItems">
-		{% for link in orders %}
-		<div>
-			<div id="itemName">
-				<span id="itemNameTag">{{link.orderId}}</span><br>
-				<span id="itemNameTag">{{link.productId}}</span><br>
-                <span id="itemNameTag">{{link.productName}}</span><br>
-                <span id="itemNameTag">{{link.categoryId}}</span><br>
-                <span id="itemNameTag">{{link.valueNet}}</span><br>
-			</div>
-		</div>
-		{% endfor %}
-	</div>
+        <div class = "quantity">
+              <form action="/addToCart?productId={{link[0]}}" method="post" href="/addToCart?productId={{link[0]}}">
+                       <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
+                       <input type = "hidden"  value = {{link[0]}} />
+                  <div class = "remove">
+                       <td><input type="submit" value="Dodaj do koszyka"/></td>
+                  </div>
+              </form>
+        </div>
+
+
+
+      </div>
+  		{% endfor %}
 </div>
-{% endif %}
-
-
-
-
+{%  endif %}
 
 
 
@@ -163,13 +152,13 @@
 		{% for link in products %}
       <div class="basket-product">
         <div class="item">
-
           <div class="product-details">
             <h1><strong><span class="item-quantity">{{link.quantity}} x </span> {{link.productName}} </strong></h1>
             <p><strong>Navy, Size 18</strong></p>
             <p>Product Code - 232321939</p>
           </div>
         </div>
+
         <div class="price">{{link.valueNet}}</div>
         <div class="quantity">
           <input type="number" value="4" min="1" class="quantity-field">

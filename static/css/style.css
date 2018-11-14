@@ -25,6 +25,7 @@
     cursor:pointer;
     overflow: hidden;
     outline:none;
+    color: white;
 }
 
 .cartClass {
@@ -93,7 +94,7 @@ input[type="number"] {
 .subtotal-value:before,
 .total-value:before,
 .promo-value:before {
-  content: '£';
+  content: 'PLN ';
 }
 
 .hide {
@@ -106,7 +107,7 @@ main {
   margin: 0 auto;
   overflow: hidden;
   padding: 1rem 0;
-  width: 960px;
+  width: 1200px;
 }
 
 .basket,
@@ -120,6 +121,12 @@ aside {
 .basket {
   width: 70%;
 }
+.basket_1 {
+  width: 80%;
+  align: center;
+    margin-left:auto;
+    margin-right:auto;
+}
 
 .basket-module {
   color: #111;
@@ -128,30 +135,6 @@ aside {
 label {
   display: block;
   margin-bottom: 0.3125rem;
-}
-
-.promo-code-field {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  text-transform: uppercase;
-  transition: all 0.2s linear;
-  width: 48%;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-  -o-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-.promo-code-field:hover,
-.promo-code-field:focus {
-  border: 1px solid #999;
-}
-
-.promo-code-cta {
-  border-radius: 4px;
-  font-size: 0.625rem;
-  margin-left: 0.625rem;
-  padding: 0.6875rem 1.25rem 0.625rem;
 }
 
 .basket-labels {
@@ -178,13 +161,19 @@ li.subtotal:before {
 }
 
 .item {
-  width: 55%;
+  width: 40%;
 }
 
-.price,
+.item {
+  width: 45%;
+}
+
+.price{
+    width: 15%;
+}
 .quantity,
-.subtotal {
-  width: 15%;
+.producent{
+  width: 10%;
 }
 
 .subtotal {
@@ -197,7 +186,7 @@ li.subtotal:before {
   position: absolute;
   right: 0;
   text-align: right;
-  width: 45%;
+  width: 10%;
 }
 
 .remove button {
@@ -226,7 +215,7 @@ li.subtotal:before {
 }
 
 .product-details {
-  width: 65%;
+30%
 }
 
 .product-frame {
@@ -368,18 +357,23 @@ aside {
     margin-bottom: 1rem;
   }
   .product-image {
-    width: 40%;
+    width: 0%;
   }
   .product-details {
     width: 60%;
   }
   .price,
-  .subtotal {
-    width: 33%;
+  .subtotal
+   .producent{
+    width: 10%;
   }
   .quantity {
     text-align: center;
-    width: 34%;
+    width: 10%;
+  }
+    .producent {
+    text-align: center;
+    width: 10%;
   }
   .quantity-field {
     float: none;
@@ -432,6 +426,7 @@ img,
 .price,
 .quantity,
 .subtotal,
+.producent,
 .basket-product,
 .product-image,
 .product-details {
