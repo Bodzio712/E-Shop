@@ -10,6 +10,7 @@ from sqlalchemy import *
 from sqlalchemy.ext.automap import *
 from sqlalchemy.pool import StaticPool
 import hashlib
+import datetime
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
@@ -248,26 +249,52 @@ def placeOrder():
   loggedIn, firstName = getLoginDetails()
   with engine.connect() as connection:
     try:
+        # email klienta pobierany z cookie
+        email = session['email']
+
+        delivery = metadata.tables['delivery']
+        payment = metadata.tables['payment']
+        client = metadata.tables['client']
+
         product = metadata.tables['product']
         cart = metadata.tables['cart']
         orders = metadata.tables['orders']
 
         join_obj = product.join(cart, product.c.productId == cart.c.productId)
-        join_sel = select([product.c.productId, product.c.productName]).select_from(join_obj)#select statement
+        join_sel = select([product.c.productId, product.c.productName, product.c.categoryId]).select_from(join_obj)#select statement
         prod_data = connection.execute(join_sel)#fetch data
-        #stworz tabele orders i zapisz do bazy\
+
+        # Pobieranie z bazy danych o metodach dostawy
+        select_delivery = select([delivery])
+        delivery_data = connection.execute(select_delivery).fetchall()
+
+        # Pobieranie z bazy danych o metodach płatności
+        select_payment = select([payment])
+        paymant_data = connection.execute(select_payment).fetchall()
+
+        #product = Table('product', metadata, autoload=True, autoload_with=engine)
+        #prod_sel = select([product]).where(product.c.categoryId == kategoriaId)
+
+        select_clientId = select([client]).where(client.c.email == email)
+
+        client_data = connection.execute(select_clientId).fetchall()
+        for row in client_data:
+            clientId = row.clientId
+            clientAdress = row.clientAddress
+
+        #stworz tabele orders i zapisz do bazy
 
         for row in prod_data:
             ins = orders.insert().values(
             productId=row.productId,
             productName=row.productName,
-            categoryId=1,
-            clientId=11,
-            clientAddress='adress',
+            categoryId=row.categoryId,
+            clientId=clientId,
+            clientAddress=clientAdress,
             idNip=21,
             deliveryId=21,
             paymentId=21,
-            date='21.10.2018',
+            date=datetime.date.today(),
             quantity=10,
             valueNet=99.9,
             valueGross=77.8)
