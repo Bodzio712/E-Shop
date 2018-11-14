@@ -151,7 +151,7 @@ def add():
     c = conn.cursor()
     type = [(20, 'Silniki'),
             (21, 'Świece'),
-            (23, 'Lusterka'),
+            (23, 'Filtry powietrza'),
             (24, 'Oleje'),
             (25, 'Klocki hamulcowe')
             ]
@@ -165,11 +165,15 @@ def add():
                     (25, 'Volkswagen'),
                     ]
     #ID, Nazwa produktu, Opis, Typ, Kategoria, Producent, ?, ?, Cena netto, Cena brutto
-    product = [(3, "Silnik 1.9 TDI", "Silnik do Audi A4/A6 B5", 20, 22, 25, 3, 3, 100, 123),
-               (4, "Olej syntetyczny Castrol EDGE", "Olej do samochodów osobowych", 24, 22, 22, 4, 4, 20, 24.6),
-               (5, "Silnik 1.8 ADR", "Silnik do Audi A4 B5", 20, 22, 25, 3, 3, 200, 246),
-               (6, "Silnik 1.8 AGN", "Silnik do Audi A3 8L", 20, 22, 25, 3, 3, 100, 123),
+    product = [(3, "Silnik 1.9 TDI", "Silnik do Audi A4/A6 B5", 20, 22, 25, 3, 3, 1000, 1230),
+               (4, "Olej syntetyczny Castrol EDGE", "Olej do samochodów osobowych", 24, 21, 22, 4, 4, 20, 24.6),
+               (5, "Silnik 1.8 ADR", "Silnik do Audi A4 B5", 20, 22, 25, 3, 3, 2000, 2460),
+               (6, "Silnik 1.8 AGN", "Silnik do Audi A3 8L", 20, 22, 25, 3, 3, 1000, 1230),
                (7, "Klocki hamulcowe BOSCH ", "Klocki hamulcowe uniwersalne do różnych typów samochodów", 25, 21, 21, 3, 3, 10, 12.3),
+               (8, "Świece BOSCH PLATINUM IRIDIUM FR7KI332S ", "Świece zapłonowe uniwersalne", 21, 21, 21, 3, 3, 20, 24.6),
+               (9, "Świece BOSCH FR6KI332S", "Świece zapłonowe uniwersalne", 21, 21, 21, 3, 3, 30, 36.9),
+               (10, "Motul Air Filter MHX77D", "Filtr powietrza do sam. osobowych", 23, 21, 23, 3, 3, 30, 36.9),
+               (11, "MOTUL 5100 MA2 4T 10W40", "Olej syntetyczny, obj. 4L", 24, 21, 23, 3, 3, 100, 123),
                ]
     state = [(1, "produkt1", 111),
                (2, "produkt2", 222),
