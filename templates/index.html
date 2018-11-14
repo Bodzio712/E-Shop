@@ -92,7 +92,7 @@
         <ul>
           <li class="item item-heading">Nazwa</li>
           <li class="price">Cena</li>
-          <li class="quantity">Details</li>
+          <li class="quantity">Szczegóły</li>
           <li class="producent">Producent</li>
           <li class="quantity">Ilość</li>
         </ul>
@@ -109,10 +109,10 @@
         <div class="price">{{link.priceGross}}</div>
 
 
-        <div class = "quantity">
-            <a href="#ex1" rel="modal:open">Szczegóły</a>
+        <div class = "quantity" rel="modal:open">
+            <a href="#ex1" rel="modal:open" class="button">Szczegóły</a>
             <div id="ex1" class="modal">
-                <p>{{ link.productName }} </p>
+                <p>{{ link.description }} </p>
             </div>
         </div>
 
@@ -173,7 +173,7 @@
 
 	 <aside>
       <div class="summary">
-        <div class="summary-total-items"><span class="total-items"></span> Items in your Bag</div>
+        <div class="summary-total-items"><span class="total-items"></span>Przedmioty w koszyku</div>
         <div class="summary-subtotal">
           <div class="subtotal-title">Subtotal</div>
           <div class="subtotal-value final-value" id="basket-subtotal">130.00</div>
@@ -205,7 +205,7 @@
           <div class="total-value final-value" id="basket-total">130.00</div>
         </div>
         <div class="summary-checkout">
-          <button class="checkout-cta">Go to Secure Checkout</button>
+          <button class="checkout-cta">Zapłać</button>
         </div>
       </div>
     </aside>
