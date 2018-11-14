@@ -68,7 +68,7 @@ def getLoginDetails():
             noOfItems = 0
         else:
             loggedIn = True
-            cur.execute("SELECT userId, firstName FROM users WHERE email = '" + session['email'] + "'")
+            cur.execute("SELECT clientId, firstName FROM client WHERE email = '" + session['email'] + "'")
             userId, firstName = cur.fetchone()
     conn.close()
     return (loggedIn, firstName)
@@ -87,7 +87,6 @@ def item_number():
 def root():
     loggedIn, firstName= getLoginDetails()
     typeData, manuData, catData = xyz()
-    loggedIn = "YES"
     item_no = item_number()
     con = engine.connect()
     try:
@@ -370,10 +369,11 @@ def loginForm():
         products = con.execute(meta)
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) +  " URL: " + request.base_url)
     con.close()
     typeData, manuData, catData = xyz()
-    return render_template('login.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+    return render_template('login.html')
+
 
 def is_valid(email, password):
     con = sqlite3.connect('database.db')
@@ -395,7 +395,8 @@ def login():
             session['email'] = email
             return redirect(url_for('root'))
         else:
-            return redirect(url_for('root'))
+            logger.error('Failed to upload to ftp: ' + request.base_url)
+
 
 @app.route("/logout")
 def logout():
