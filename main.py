@@ -9,6 +9,7 @@ import werkzeug
 from sqlalchemy import *
 from sqlalchemy.ext.automap import *
 from sqlalchemy.pool import StaticPool
+import hashlib
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
@@ -58,6 +59,19 @@ def xyz():
     con.close()
     return (typeData, manuData, catData)
 
+def getLoginDetails():
+    with sqlite3.connect('database.db') as conn:
+        cur = conn.cursor()
+        if 'email' not in session:
+            loggedIn = False
+            firstName = ''
+            noOfItems = 0
+        else:
+            loggedIn = True
+            cur.execute("SELECT userId, firstName FROM users WHERE email = '" + session['email'] + "'")
+            userId, firstName = cur.fetchone()
+    conn.close()
+    return (loggedIn, firstName)
 
 def item_number():
     con = engine.connect()
@@ -71,7 +85,9 @@ def item_number():
 
 @app.route("/")
 def root():
-
+    loggedIn, firstName= getLoginDetails()
+    typeData, manuData, catData = xyz()
+    loggedIn = "YES"
     item_no = item_number()
     con = engine.connect()
     try:
@@ -80,13 +96,14 @@ def root():
         products = con.execute(meta)
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
     typeData, manuData, catData = xyz()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products, loggedIn = loggedIn)
 
 @app.route("/rodzaje")
 def rodzaje():
+    loggedIn, firstName= getLoginDetails()
     typeData, manuData, catData = xyz()
     item_no = item_number()
     con = engine.connect()
@@ -97,12 +114,13 @@ def rodzaje():
         prodData = con.execute(prod_sel).fetchall()
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData = prodData)
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData = prodData, loggedIn = loggedIn)
 
 @app.route("/producenci")
 def producenci():
+    loggedIn, firstName= getLoginDetails()
     typeData, manuData, catData = xyz()
     item_no = item_number()
     con = engine.connect()
@@ -113,13 +131,14 @@ def producenci():
         prodData = engine.execute(prod_sel).fetchall()
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
 
-    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData)
+    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData, loggedIn = loggedIn)
 
 @app.route("/kategorie")
 def kategorie():
+    loggedIn, firstName= getLoginDetails()
     typeData, manuData, catData = xyz()
     item_no = item_number()
     con = engine.connect()
@@ -130,12 +149,13 @@ def kategorie():
         prodData = engine.execute(prod_sel).fetchall()
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
-    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData)
+    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData, loggedIn = loggedIn)
 
 @app.route("/addToCart", methods=["GET", "POST"])
 def addToCart():
+        loggedIn, firstName = getLoginDetails()
         for key, value in request.form.items():
             print("key: {0}, value: {1}".format(key, value))
         print("QUANTITY:")
@@ -150,9 +170,10 @@ def addToCart():
             cart = metadata.tables['cart']
             ins2 = cart.insert().values(clientId = clientId, productId=productId, quantity=quant)
             x = con.execute(ins2)
+
         except Exception as e:
             con.close()
-            logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+            logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
         con.close()
         return redirect(url_for('root'))
         # commit the record the database
@@ -173,26 +194,36 @@ def addToCart():
 
 @app.route("/cart")
 def cart():
-#    if 'email' not in session:
-#        return redirect(url_for('loginForm'))
-#    loggedIn, firstName, noOfItems = getLoginDetails()
-#    email = session['email']
+    loggedIn, firstName= getLoginDetails()
+    loggedIn = "YES"
     typeData, manuData, catData = xyz()
     item_no = item_number()
+
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+    email = session['email']
+
     con = engine.connect()
     try:
         product = metadata.tables['product']
         cart = metadata.tables['cart']
         meta = select([product, cart], cart.c.productId == product.c.productId)
-        cp_data = con.execute(meta).fetchall()
+        #join = cart.join(product, product.c.productId == cart.c.productId)
+        #meta = select([cart.c.cartId, cart.c.productId, product.c.categoryId, product.c.productName]).select_from(join)
+        #cp_data = engine.execute(meta).fetchall()
+        join_obj = cart.join(product, product.c.productId == cart.c.productId)
+        join_sel = select([product.c.productId, product.c.productName, cart.c.cartId]).select_from(join_obj)#select statement
+        cp_data = con.execute(join_sel).fetchall()#fetch data
+
+
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
-
-    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData, noOfItems = item_no, products=cp_data)
+    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, products=cp_data, loggedIn = loggedIn)
 
 def delete_cart():
+    loggedIn, firstName= getLoginDetails()
     try:
         con = engine.connect()
         cart = metadata.tables['cart']
@@ -200,12 +231,12 @@ def delete_cart():
         con.execute(d)
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
 
 @app.route("/placeOrder")
 def placeOrder():
-
+  loggedIn, firstName = getLoginDetails()
   with engine.connect() as connection:
     try:
         product = metadata.tables['product']
@@ -216,7 +247,6 @@ def placeOrder():
         join_sel = select([product.c.productId, product.c.productName]).select_from(join_obj)#select statement
         prod_data = connection.execute(join_sel)#fetch data
         #stworz tabele orders i zapisz do bazy\
-
         for row in prod_data:
             ins = orders.insert().values(
             productId=row.productId,
@@ -234,35 +264,42 @@ def placeOrder():
             connection.execute(ins)
     except Exception as e:
         connection.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     connection.close()
 
   delete_cart()
-  return render_template("index.html")
+  return redirect(url_for('root'))
 
 
 @app.route("/removeCart")
 def removeFromCart():
+    loggedIn, firstName= getLoginDetails()
     con = engine.connect()
     try:
-        removeId = request.args.get("productId")
+        removeId = request.args.get("cartId")
         cart = metadata.tables['cart']
-        d = delete(cart, cart.c.productId == removeId)
+        d = delete(cart, cart.c.cartId == removeId, )
         con.execute(d)
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
     return redirect(url_for('cart'))
 
 
 @app.route("/account/profil")
 def accountProfil():
-    return render_template('index.html')
+    loggedIn, firstName= getLoginDetails()
+    typeData, manuData, catData = xyz()
+    item_no = item_number()
+    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, loggedIn = loggedIn)
 
 
 @app.route("/account/orders")
 def accountOrders():
+    loggedIn, firstName= getLoginDetails()
+    typeData, manuData, catData = xyz()
+    item_no = item_number()
     con = engine.connect()
     try:
         orders = metadata.tables['orders']
@@ -270,9 +307,9 @@ def accountOrders():
         productData = con.execute(ord_sel).fetchall()
     except Exception as e:
         con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
-    return render_template("index.html", orders=productData)
+    return render_template("index.html", orders=productData, categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, loggedIn = loggedIn)
 
 
 
@@ -301,16 +338,40 @@ def register():
                         email=email,
                         phone=tel,
                         deliveryId = 1,
-                        paymentId = 1)
+                        paymentId = 1,
+                        password = hashlib.md5(password.encode()).hexdigest())
                     save = con.execute(client_insert)
                 except Exception as e:
                     con.close()
-                    logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
+                    logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
                 con.close()
-            return render_template("index.html")
-@app.route("/loginForm")
+            return redirect(url_for('root'))
+
+@app.route("/loginForm", methods=['GET', 'POST'])
 def loginForm():
     return render_template('login.html')
+
+def is_valid(email, password):
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    cur.execute('SELECT email, password FROM client')
+    data = cur.fetchall()
+    for row in data:
+        if row[0] == email and row[1] == hashlib.md5(password.encode()).hexdigest():
+            return True
+    return False
+
+
+@app.route("/login", methods = ['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        if is_valid(email, password):
+            session['email'] = email
+            return redirect(url_for('root'))
+        else:
+            return redirect(url_for('root'))
 
 @app.route("/logout")
 def logout():
