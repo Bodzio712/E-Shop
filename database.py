@@ -13,7 +13,7 @@ conn.execute('''CREATE TABLE IF NOT EXISTS client
         phone TEXT,
 		deliveryId INTEGER,
         paymentId INTEGER,
-        password TEXT
+        password TEXT,
 		FOREIGN KEY(deliveryId) REFERENCES delivery(deliveryId),
         FOREIGN KEY(paymentId) REFERENCES payment(paymentId)
 		)''')
