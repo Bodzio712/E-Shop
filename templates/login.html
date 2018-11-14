@@ -46,27 +46,6 @@
             </div>
         </div>
 
-        <!-- Profil-->
-        <div class="dropdown">
-            <button class="dropbtn">ProfilOrderRight
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                <a href="/account/orders">Zamowienia</a>
-			    <a href="/account/profil">Profil</a>
-                <a href="/account/logout">Wyloguj</a>
-            </div>
-        </div>
-
-        <!-- Koszyk-->
-        <div id="cartId">
-		<a class="link" href="/cart">
-			<button class="cartClass">
-			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
-                {{noOfItems}}
-			</button>
-		</a>
-	    </div>
 
     </div>
 <h1 align="center">Logowanie</h1>
@@ -81,6 +60,6 @@
     </table>
     <p><center><input type="submit" align="center" value="Zaloguj"></center></p>
 </form>
-<center><a href="/account/registerForm">Rejestracja</a></center>
+<center><a href="/registerForm">Rejestracja</a></center>
 </body>
 </html>
