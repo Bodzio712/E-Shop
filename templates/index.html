@@ -185,19 +185,17 @@
         <div class="summary-delivery">
           <select name="delivery-collection" class="summary-delivery-selection">
 			  <option value="0" selected="selected">Wybierz dostawę</option>
-             <option value="collection">Collection</option>
-             <option value="first-class">Royal Mail 1st Class</option>
-             <option value="second-class">Royal Mail 2nd Class</option>
-             <option value="signed-for">Royal Mail Special Delivery</option>
+              {% for link in deliveryData %}
+                  <option value="{{ link.deliveryId }}" >{{ link.deliveryType }}</option>
+              {%  endfor %}
           </select>
         </div>
 		  <div class="summary-delivery">
           <select name="delivery-collection" class="summary-delivery-selection">
               <option value="0" selected="selected">Wybierz płatność</option>
-             <option value="collection">Collection</option>
-             <option value="first-class">Royal Mail 1st Class</option>
-             <option value="second-class">Royal Mail 2nd Class</option>
-             <option value="signed-for">Royal Mail Special Delivery</option>
+             {% for link in paymentData %}
+                  <option value="{{ link.paymentId }}" >{{ link.paymentType }}</option>
+              {%  endfor %}
           </select>
         </div>
         <div class="summary-total">
@@ -213,6 +211,7 @@
     </aside>
 </main>
 {% endif %}
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

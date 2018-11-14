@@ -206,6 +206,8 @@ def cart():
     try:
         product = metadata.tables['product']
         cart = metadata.tables['cart']
+        delivery = metadata.tables['delivery']
+        payment = metadata.tables['payment']
         meta = select([product, cart], cart.c.productId == product.c.productId)
         #join = cart.join(product, product.c.productId == cart.c.productId)
         #meta = select([cart.c.cartId, cart.c.productId, product.c.categoryId, product.c.productName]).select_from(join)
@@ -214,12 +216,20 @@ def cart():
         join_sel = select([product.c.productId, product.c.productName, cart.c.cartId]).select_from(join_obj)#select statement
         cp_data = con.execute(join_sel).fetchall()#fetch data
 
+        # Pobieranie z bazy danych o metodach dostawy
+        select_delivery = select([delivery])
+        delivery_data = con.execute(select_delivery).fetchall()
+
+        # Pobieranie z bazy danych o metodach płatności
+        select_payment = select([payment])
+        paymant_data = con.execute(select_payment).fetchall()
+
 
     except Exception as e:
         con.close()
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
-    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, products=cp_data, loggedIn = loggedIn)
+    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, products=cp_data, loggedIn = loggedIn, deliveryData=delivery_data, paymentData=paymant_data)
 
 def delete_cart():
     loggedIn, firstName= getLoginDetails()

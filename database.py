@@ -193,6 +193,19 @@ def add():
                ]
     company = [(123456, 111111, 222222, "firma1", "adres_firma_1", "555-666-777", "email@firma.pl")]
 
+    delivery = [(1, "List zwykły", 7),
+                (2, "List polecony", 5),
+                (3, "Paczkomat", 2),
+                (4, "Przesyłka kurierska", 3)
+                ]
+
+    payment = [(1, "Przelew internetowy"),
+               (2, "Płatność przy odbiorze")
+               ]
+
+    client = [(1, "Test", "Tester", "abc 321", "test@wp.pl", "111222333", 1, 1, "202cb962ac59075b964b07152d234b70")]
+
+
     c.executemany('INSERT INTO type VALUES (?,?)', type)
     c.executemany('INSERT INTO category VALUES (?,?)', category)
     c.executemany('INSERT INTO manufacturer VALUES (?,?)', manufacturer)
@@ -200,6 +213,10 @@ def add():
     c.executemany('INSERT INTO availability VALUES (?,?,?)', state)
     c.executemany('INSERT INTO warehouse VALUES (?,?,?,?)', wh)
     c.executemany('INSERT INTO company VALUES (?,?,?,?,?,?,?)', company)
+    c.executemany('INSERT INTO delivery VALUES (?,?,?)', delivery)
+    c.executemany('INSERT INTO payment VALUES (?,?)', payment)
+    c.executemany('INSERT INTO client VALUES (?,?,?,?,?,?,?,?,?)', client)
+
     conn.commit()
     conn.close()
 
