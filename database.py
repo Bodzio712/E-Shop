@@ -176,6 +176,8 @@ def add():
                (9, "Świece BOSCH FR6KI332S", "Świece zapłonowe uniwersalne", 21, 21, 21, 3, 3, 30, 36.9),
                (10, "Motul Air Filter MHX77D", "Filtr powietrza do sam. osobowych", 23, 21, 23, 3, 3, 30, 36.9),
                (11, "MOTUL 5100 MA2 4T 10W40", "Olej syntetyczny, obj. 4L", 24, 21, 23, 3, 3, 100, 123),
+               (12, "MOTUL 51012 MA2 4T 10W50", "Olej syntetyczny, obj. 5L", 24, 21, 23, 3, 3, 100, 123),
+               (13, "Olej syntetyczny Castrol 18B20", "Olej do półsyn. do sam. osobowych", 24, 21, 22, 4, 4, 30, 36.9),
                ]
     state = [(1, "produkt1", 111),
                (2, "produkt2", 222),
