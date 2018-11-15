@@ -57,7 +57,7 @@
 
 		{% if not loggedIn %}
 		<div class="dropdown">
-		<a class="dropbtn" href="/loginForm">Sign In</a>
+		<a class="dropbtn" href="/loginForm">Zaloguj</a>
 		</div>
 
 		{% else %}
@@ -119,9 +119,9 @@
         <div class="producent">{{link.name}}</div>
 
         <div class = "quantity">
-              <form action="/addToCart?productId={{link[0]}}" method="post" href="/addToCart?productId={{link[0]}}">
+              <form action="/addToCart?productId={{link.manufacturerId}}" method="post" href="/addToCart?productId={{link.manufacturerId}}">
                        <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
-                       <input type = "hidden"  value = {{link[0]}} />
+                       <input type = "hidden"  value = {{link.manufacturerId}} />
                   <div class = "remove">
                        <td><input type="submit" value="Dodaj do koszyka"/></td>
                   </div>
@@ -173,7 +173,7 @@
 
 	 <aside>
       <div class="summary">
-        <div class="summary-total-items"><span class="total-items"></span>Przedmioty w koszyku</div>
+        <div class="summary-total-items"><span class="total-items"></span> Przedmioty w koszyku</div>
         <div class="summary-subtotal">
           <div class="subtotal-title">Subtotal</div>
           <div class="subtotal-value final-value" id="basket-subtotal">130.00</div>

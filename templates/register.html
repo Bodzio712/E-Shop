@@ -47,31 +47,9 @@
             </div>
         </div>
 
-        <!-- Profil-->
-        <div class="dropdown">
-            <button class="dropbtn">ProfilOrderRight
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                <a href="/account/orders">Zamowienia</a>
-			    <a href="/account/profil">Profil</a>
-                <a href="/account/logout">Wyloguj</a>
-            </div>
-        </div>
-
-        <!-- Koszyk-->
-        <div id="cartId">
-		<a class="link" href="/cart">
-			<button class="cartClass">
-			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
-                {{noOfItems}}
-			</button>
-		</a>
-	    </div>
-
     </div>
 
-<h1 align="center">Rejestracja</h1>
+<h2 align="center">Rejestracja</h2>
 <form action="/register" method="POST" onsubmit="return validate()">
     <table align="center">
         <tr><td>Email:</td><td><input type="email" name="email" id="email" required></td></tr>
@@ -85,6 +63,6 @@
     <br>
     <center><input type="submit" value="Zarejestruj"></center>
 </form>
-<center><p><a href="/account/loginForm">Logowanie</a></p></center>
+<center><p><a href="/loginForm">Logowanie</a></p></center>
 </body>
 </html>

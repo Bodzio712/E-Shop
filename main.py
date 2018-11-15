@@ -114,7 +114,7 @@ def rodzaje():
         product = Table('product', metadata, autoload=True, autoload_with=engine)
         manufacturer = metadata.tables['manufacturer']
         join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, manufacturer.c.name]).select_from(join_prod_man).where(product.c.typeId == typeId)
+        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man).where(product.c.typeId == typeId)
         prodData = con.execute(join_sel).fetchall()
     except Exception as e:
         con.close()
@@ -133,7 +133,7 @@ def producenci():
         product = Table('product', metadata, autoload=True, autoload_with=engine)
         manufacturer = metadata.tables['manufacturer']
         join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, manufacturer.c.name]).select_from(join_prod_man).where(product.c.manufacturerId == producentId)
+        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man).where(product.c.manufacturerId == producentId)
         prodData = con.execute(join_sel).fetchall()
     except Exception as e:
         con.close()
@@ -415,7 +415,7 @@ def loginForm():
         logger.error('Failed to upload to ftp: ' + str(e) +  " URL: " + request.base_url)
     con.close()
     typeData, manuData, catData = xyz()
-    return render_template('login.html')
+    return render_template('login.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
 
 
 def is_valid(email, password):
