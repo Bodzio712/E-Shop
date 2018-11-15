@@ -94,7 +94,7 @@ def root():
         product = metadata.tables['product']
         manufacturer = metadata.tables['manufacturer']
         join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, manufacturer.c.name]).select_from(join_prod_man)
+        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man)
         products = con.execute(join_sel).fetchall()
     except Exception as e:
         con.close()
