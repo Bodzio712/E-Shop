@@ -119,9 +119,9 @@
         <div class="producent">{{link.name}}</div>
 
         <div class = "quantity">
-              <form action="/addToCart?productId={{link.manufacturerId}}" method="post" href="/addToCart?productId={{link.manufacturerId}}">
+              <form action="/addToCart?productId={{link.productId}}" method="post" href="/addToCart?productId={{link.productId}}">
                        <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
-                       <input type = "hidden"  value = {{link.manufacturerId}} />
+                       <input type = "hidden"  value = {{link.productId}} />
                   <div class = "remove">
                        <td><input type="submit" value="Dodaj do koszyka"/></td>
                   </div>
