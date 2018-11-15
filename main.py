@@ -280,12 +280,9 @@ def placeOrder():
         select_payment = select([payment])
         paymant_data = connection.execute(select_payment).fetchall()
 
-        #product = Table('product', metadata, autoload=True, autoload_with=engine)
-        #prod_sel = select([product]).where(product.c.categoryId == kategoriaId)
-
         select_clientId = select([client]).where(client.c.email == email)
-
         client_data = connection.execute(select_clientId).fetchall()
+
         for row in client_data:
             clientId = row.clientId
             clientAdress = row.clientAddress
@@ -347,8 +344,19 @@ def accountOrders():
     item_no = item_number()
     con = engine.connect()
     try:
+        email = session['email']
+        client = metadata.tables['client']
+        select_clientId = select([client]).where(client.c.email == email)
+        client_data = con.execute(select_clientId).fetchall()
+
+        for row in client_data:
+            clientId = row.clientId
+
         orders = metadata.tables['orders']
-        ord_sel = select([orders])
+        delivery = metadata.tables['delivery']
+        payment = metadata.tables['payment']
+        join_ord = orders.join(delivery, orders.c.deliveryId == delivery.c.deliveryId)
+        ord_sel = select([orders.c.deliveryId, orders.c.productName, orders.c.valueGross, orders.c.quantity, delivery.c.deliveryType]).select_from(join_ord).where(orders.c.clientId == clientId)
         productData = con.execute(ord_sel).fetchall()
     except Exception as e:
         con.close()

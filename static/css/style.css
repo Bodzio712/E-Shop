@@ -171,6 +171,7 @@ li.subtotal:before {
 .price{
     width: 15%;
 }
+.delivery,
 .quantity,
 .producent{
   width: 10%;
@@ -371,6 +372,7 @@ aside {
     text-align: center;
     width: 10%;
   }
+  .delivery,
     .producent {
     text-align: center;
     width: 10%;
@@ -427,6 +429,7 @@ img,
 .quantity,
 .subtotal,
 .producent,
+.delivery,
 .basket-product,
 .product-image,
 .product-details {

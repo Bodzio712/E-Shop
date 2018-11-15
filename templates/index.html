@@ -63,7 +63,7 @@
 		{% else %}
         <!-- Profil-->
         <div class="dropdown">
-            <button class="dropbtn">ProfilOrderRight
+            <button class="dropbtn">Profil
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
@@ -210,6 +210,33 @@
       </div>
     </aside>
 </main>
+{% endif %}
+
+<!--Obsługa wyświetlania zamówionych przedmiotów-->
+{% if orders%}
+    <div class="basket_1">
+    <div class="basket-labels">
+        <ul>
+          <li class="item item-heading">Nazwa</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Ilość</li>
+          <li class="delivery">Sposób dostawy</li>
+        </ul>
+      </div>
+        {% for link in orders %}
+      <div class="basket-product">
+        <div class="item">
+          <div class="product-details">
+            <p><strong>{{link.productName}} </strong></p>
+          </div>
+        </div>
+        <div class="price">{{link.valueGross}}</div>
+        <div class = "quantity">{{ link.quantity }}</div>
+        <div class="delivery">{{ link.deliveryType }}</div>
+      </div>
+  		{% endfor %}
+
+    </div>
 {% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
