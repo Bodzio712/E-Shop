@@ -91,7 +91,7 @@
       <div class="basket-labels">
         <ul>
           <li class="item item-heading">Nazwa</li>
-          <li class="price">Cena</li>
+          <li class="price">Cena jedn. brutto</li>
           <li class="quantity">Szczegóły</li>
           <li class="producent">Producent</li>
           <li class="quantity">Ilość</li>
@@ -116,7 +116,7 @@
             </div>
         </div>
 
-        <div class="producent">{{link.manufacturerId}}</div>
+        <div class="producent">{{link.name}}</div>
 
         <div class = "quantity">
               <form action="/addToCart?productId={{link[0]}}" method="post" href="/addToCart?productId={{link[0]}}">
@@ -143,10 +143,10 @@
 <div class="basket">
       <div class="basket-labels">
         <ul>
-          <li class="item item-heading">Item</li>
-          <li class="price"></li>
-          <li class="quantity">Quantity</li>
-          <li class="subtotal">Subtotal</li>
+          <li class="item item-heading">Produkt</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Ilość szt.</li>
+          <li class="subtotal">Suma brutto</li>
         </ul>
       </div>
 		{% for link in products %}
@@ -159,9 +159,9 @@
           </div>
         </div>
 
-        <div class="price">{{link.valueNet}}</div>
+        <div class="price">{{link.priceGross}}</div>
         <div class="quantity">
-          <input type="number" value="4" min="1" class="quantity-field">
+          <input type="number" value="{{ link.quantity }}" min="1" class="quantity-field">
         </div>
         <div class="subtotal">104.00</div>
         <a class="remove" href="/removeCart?cartId={{link.cartId}}">
@@ -183,7 +183,7 @@
           </div>
         </div>
         <div class="summary-delivery">
-          <select name="delivery-collection" class="summary-delivery-selection">
+          <select name="delivery-collection" class="summary-delivery-selection" form="checkoutform">
 			  <option value="0" selected="selected">Wybierz dostawę</option>
               {% for link in deliveryData %}
                   <option value="{{ link.deliveryId }}" >{{ link.deliveryType }}</option>
@@ -191,7 +191,7 @@
           </select>
         </div>
 		  <div class="summary-delivery">
-          <select name="delivery-collection" class="summary-delivery-selection">
+          <select name="payment-collection" class="summary-delivery-selection" form="checkoutform">
               <option value="0" selected="selected">Wybierz płatność</option>
              {% for link in paymentData %}
                   <option value="{{ link.paymentId }}" >{{ link.paymentType }}</option>
@@ -203,7 +203,7 @@
           <div class="total-value final-value" id="basket-total">130.00</div>
         </div>
         <div class="summary-checkout">
-            <form action="/placeOrder" href="/placeOrder">
+            <form action="/placeOrder" href="/placeOrder" method="POST" id="checkoutform">
                 <input type="submit" value="Zapłać" class="checkout-cta"/>
             </form>
         </div>

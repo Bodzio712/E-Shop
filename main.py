@@ -92,8 +92,10 @@ def root():
     con = engine.connect()
     try:
         product = metadata.tables['product']
-        meta = select([product])
-        products = con.execute(meta)
+        manufacturer = metadata.tables['manufacturer']
+        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
+        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, manufacturer.c.name]).select_from(join_prod_man)
+        products = con.execute(join_sel).fetchall()
     except Exception as e:
         con.close()
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
@@ -110,8 +112,10 @@ def rodzaje():
     try:
         typeId = request.args.get("typeId")
         product = Table('product', metadata, autoload=True, autoload_with=engine)
-        prod_sel = select([product]).where(product.c.typeId == typeId)
-        prodData = con.execute(prod_sel).fetchall()
+        manufacturer = metadata.tables['manufacturer']
+        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
+        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, manufacturer.c.name]).select_from(join_prod_man).where(product.c.typeId == typeId)
+        prodData = con.execute(join_sel).fetchall()
     except Exception as e:
         con.close()
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
@@ -127,8 +131,10 @@ def producenci():
     try:
         producentId = request.args.get("manuId")
         product = Table('product', metadata, autoload=True, autoload_with=engine)
-        prod_sel = select([product]).where(product.c.manufacturerId == producentId)
-        prodData = engine.execute(prod_sel).fetchall()
+        manufacturer = metadata.tables['manufacturer']
+        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
+        join_sel = select([product.c.productName, product.c.description, product.c.priceGross, manufacturer.c.name]).select_from(join_prod_man).where(product.c.manufacturerId == producentId)
+        prodData = con.execute(join_sel).fetchall()
     except Exception as e:
         con.close()
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
@@ -214,7 +220,7 @@ def cart():
         #meta = select([cart.c.cartId, cart.c.productId, product.c.categoryId, product.c.productName]).select_from(join)
         #cp_data = engine.execute(meta).fetchall()
         join_obj = cart.join(product, product.c.productId == cart.c.productId)
-        join_sel = select([product.c.productId, product.c.productName, cart.c.cartId]).select_from(join_obj)#select statement
+        join_sel = select([product.c.productId, product.c.productName, cart.c.cartId, cart.c.quantity, product.c.priceNet, product.c.priceGross]).select_from(join_obj)#select statement
         cp_data = con.execute(join_sel).fetchall()#fetch data
 
         # Pobieranie z bazy danych o metodach dostawy
@@ -244,7 +250,7 @@ def delete_cart():
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
     con.close()
 
-@app.route("/placeOrder")
+@app.route("/placeOrder", methods=["POST"])
 def placeOrder():
   loggedIn, firstName = getLoginDetails()
   with engine.connect() as connection:
@@ -261,7 +267,7 @@ def placeOrder():
         orders = metadata.tables['orders']
 
         join_obj = product.join(cart, product.c.productId == cart.c.productId)
-        join_sel = select([product.c.productId, product.c.productName, product.c.categoryId]).select_from(join_obj)#select statement
+        join_sel = select([product.c.productId, product.c.productName, product.c.categoryId, cart.c.quantity]).select_from(join_obj)#select statement
         prod_data = connection.execute(join_sel)#fetch data
 
         # Pobieranie z bazy danych o metodach dostawy
@@ -291,11 +297,11 @@ def placeOrder():
             categoryId=row.categoryId,
             clientId=clientId,
             clientAddress=clientAdress,
-            idNip=21,
-            deliveryId=21,
-            paymentId=21,
+            idNip=1,
+            deliveryId=request.form['delivery-collection'],
+            paymentId=request.form['payment-collection'],
             date=datetime.date.today(),
-            quantity=10,
+            quantity=row.quantity,
             valueNet=99.9,
             valueGross=77.8)
             connection.execute(ins)
