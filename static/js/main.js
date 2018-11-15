@@ -106,4 +106,4 @@ function removeItem(removeButton) {
     recalculateCart();
     updateSumItems();
   });
-}
+}*/

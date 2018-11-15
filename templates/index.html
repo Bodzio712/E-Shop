@@ -57,13 +57,13 @@
 
 		{% if not loggedIn %}
 		<div class="dropdown">
-		<a class="dropbtn" href="/loginForm">Sign In</a>
+		<a class="dropbtn" href="/loginForm">Zaloguj</a>
 		</div>
 
 		{% else %}
         <!-- Profil-->
         <div class="dropdown">
-            <button class="dropbtn">ProfilOrderRight
+            <button class="dropbtn">Profil
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
@@ -77,7 +77,7 @@
 		<a class="link" href="/cart">
 			<button class="cartClass">
 			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
-                {{noOfItems}}
+                <p style="color: white"> {{noOfItems}} </p>
 			</button>
 		</a>
 	    </div>
@@ -91,8 +91,8 @@
       <div class="basket-labels">
         <ul>
           <li class="item item-heading">Nazwa</li>
-          <li class="price">Cena</li>
-          <li class="quantity">Details</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Szczegóły</li>
           <li class="producent">Producent</li>
           <li class="quantity">Ilość</li>
         </ul>
@@ -109,19 +109,19 @@
         <div class="price">{{link.priceGross}}</div>
 
 
-        <div class = "quantity">
-            <a href="#ex1" rel="modal:open">Szczegóły</a>
+        <div class = "quantity" rel="modal:open">
+            <a href="#ex1" rel="modal:open" class="button">Szczegóły</a>
             <div id="ex1" class="modal">
-                <p>{{ link.productName }} </p>
+                <p>{{ link.description }} </p>
             </div>
         </div>
 
-        <div class="producent">{{link.manufacturerId}}</div>
+        <div class="producent">{{link.name}}</div>
 
         <div class = "quantity">
-              <form action="/addToCart?productId={{link[0]}}" method="post" href="/addToCart?productId={{link[0]}}">
+              <form action="/addToCart?productId={{link.productId}}" method="post" href="/addToCart?productId={{link.productId}}">
                        <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>
-                       <input type = "hidden"  value = {{link[0]}} />
+                       <input type = "hidden"  value = {{link.productId}} />
                   <div class = "remove">
                        <td><input type="submit" value="Dodaj do koszyka"/></td>
                   </div>
@@ -143,10 +143,10 @@
 <div class="basket">
       <div class="basket-labels">
         <ul>
-          <li class="item item-heading">Item</li>
-          <li class="price"></li>
-          <li class="quantity">Quantity</li>
-          <li class="subtotal">Subtotal</li>
+          <li class="item item-heading">Produkt</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Ilość szt.</li>
+          <li class="subtotal">Suma brutto</li>
         </ul>
       </div>
 		{% for link in products %}
@@ -159,9 +159,9 @@
           </div>
         </div>
 
-        <div class="price">{{link.valueNet}}</div>
+        <div class="price">{{link.priceGross}}</div>
         <div class="quantity">
-          <input type="number" value="4" min="1" class="quantity-field">
+          <input type="number" value="{{ link.quantity }}" min="1" class="quantity-field">
         </div>
         <div class="subtotal">104.00</div>
         <a class="remove" href="/removeCart?cartId={{link.cartId}}">
@@ -173,7 +173,7 @@
 
 	 <aside>
       <div class="summary">
-        <div class="summary-total-items"><span class="total-items"></span> Items in your Bag</div>
+        <div class="summary-total-items"><span class="total-items"></span> Przedmioty w koszyku</div>
         <div class="summary-subtotal">
           <div class="subtotal-title">Subtotal</div>
           <div class="subtotal-value final-value" id="basket-subtotal">130.00</div>
@@ -183,21 +183,19 @@
           </div>
         </div>
         <div class="summary-delivery">
-          <select name="delivery-collection" class="summary-delivery-selection">
+          <select name="delivery-collection" class="summary-delivery-selection" form="checkoutform">
 			  <option value="0" selected="selected">Wybierz dostawę</option>
-             <option value="collection">Collection</option>
-             <option value="first-class">Royal Mail 1st Class</option>
-             <option value="second-class">Royal Mail 2nd Class</option>
-             <option value="signed-for">Royal Mail Special Delivery</option>
+              {% for link in deliveryData %}
+                  <option value="{{ link.deliveryId }}" >{{ link.deliveryType }}</option>
+              {%  endfor %}
           </select>
         </div>
 		  <div class="summary-delivery">
-          <select name="delivery-collection" class="summary-delivery-selection">
+          <select name="payment-collection" class="summary-delivery-selection" form="checkoutform">
               <option value="0" selected="selected">Wybierz płatność</option>
-             <option value="collection">Collection</option>
-             <option value="first-class">Royal Mail 1st Class</option>
-             <option value="second-class">Royal Mail 2nd Class</option>
-             <option value="signed-for">Royal Mail Special Delivery</option>
+             {% for link in paymentData %}
+                  <option value="{{ link.paymentId }}" >{{ link.paymentType }}</option>
+              {%  endfor %}
           </select>
         </div>
         <div class="summary-total">
@@ -205,12 +203,42 @@
           <div class="total-value final-value" id="basket-total">130.00</div>
         </div>
         <div class="summary-checkout">
-          <button class="checkout-cta">Go to Secure Checkout</button>
+            <form action="/placeOrder" href="/placeOrder" method="POST" id="checkoutform">
+                <input type="submit" value="Zapłać" class="checkout-cta"/>
+            </form>
         </div>
       </div>
     </aside>
 </main>
 {% endif %}
+
+<!--Obsługa wyświetlania zamówionych przedmiotów-->
+{% if orders%}
+    <div class="basket_1">
+    <div class="basket-labels">
+        <ul>
+          <li class="item item-heading">Nazwa</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Ilość</li>
+          <li class="delivery">Sposób dostawy</li>
+        </ul>
+      </div>
+        {% for link in orders %}
+      <div class="basket-product">
+        <div class="item">
+          <div class="product-details">
+            <p><strong>{{link.productName}} </strong></p>
+          </div>
+        </div>
+        <div class="price">{{link.valueGross}}</div>
+        <div class = "quantity">{{ link.quantity }}</div>
+        <div class="delivery">{{ link.deliveryType }}</div>
+      </div>
+  		{% endfor %}
+
+    </div>
+{% endif %}
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
