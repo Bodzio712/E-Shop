@@ -1,4 +1,28 @@
+window.onload = function() {
 
+var ref = document.getElementById('white_content');
+ref.onload =  open_message();
+
+//PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
+function open_message() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8080/example",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            alert(response);
+            var section = document.getElementById("white_content");
+            alert("section ok");
+
+
+            alert("no error");
+            section.innerHTML = response;
+
+        }
+    });
+};
+}
 //#######################################
 
 // Remove Items From Cart

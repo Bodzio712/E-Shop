@@ -11,6 +11,7 @@ from sqlalchemy.ext.automap import *
 from sqlalchemy.pool import StaticPool
 import hashlib
 import datetime
+import json
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
@@ -84,7 +85,7 @@ def item_number():
     con.close()
     return noOfItems
 
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 def root():
     loggedIn, firstName= getLoginDetails()
     typeData, manuData, catData = xyz()
@@ -102,6 +103,25 @@ def root():
     con.close()
     typeData, manuData, catData = xyz()
     return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products, loggedIn = loggedIn)
+    #return render_template('index.html', xa = xa)
+
+@app.route("/example", methods=['POST', 'GET'])
+def example():
+    con = engine.connect()
+    try:
+        product = metadata.tables['product']
+        manufacturer = metadata.tables['manufacturer']
+        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
+        join_sel = select([product.c.productName, product.c.productId, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man)
+        products = con.execute(join_sel).fetchall()
+    except Exception as e:
+        con.close()
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
+    con.close()
+    xa = json.dumps([dict(r) for r in products])
+    return jsonify(xa)
+
+
 
 @app.route("/rodzaje")
 def rodzaje():
