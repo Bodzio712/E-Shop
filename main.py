@@ -12,6 +12,7 @@ from sqlalchemy.pool import StaticPool
 import hashlib
 import datetime
 import json
+from models.models import *
 
 app = Flask(__name__)
 app.secret_key = 'ABCD1234'
@@ -25,41 +26,6 @@ logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 FTPADDR = "/"
 
-#dane do navbara
-engine = create_engine("sqlite:///database.db",
-                    connect_args={'check_same_thread':False},
-                    poolclass=StaticPool)
-metadata = MetaData(engine, reflect=True)
-
-def xyz():
-    con = engine.connect()
-    try:
-        type = metadata.tables['type']
-        manu = metadata.tables['manufacturer']
-        cats = metadata.tables['category']
-        product = metadata.tables['product']
-        cart = metadata.tables['cart']
-
-        type_sel = select([type])
-        manu_sel = select([manu])
-        cats_sel = select([cats])
-        product_sel = select([product])
-        cart_sel = select([cart])
-
-        typeData = con.execute(type_sel).fetchall()
-        manuData = con.execute(manu_sel).fetchall()
-        catData = con.execute(cats_sel).fetchall()
-        productData = con.execute(product_sel).fetchall()
-        cartData = con.execute(cart_sel).fetchall()
-
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + url_for('root'))
-     #otworz contabele
-     #dodaj do tabelki
-     #zamknij conn
-    con.close()
-    return (typeData, manuData, catData)
 
 def getLoginDetails():
     with sqlite3.connect('database.db') as conn:
@@ -87,99 +53,36 @@ def item_number():
 
 @app.route("/", methods=['POST', 'GET'])
 def root():
-    loggedIn, firstName= getLoginDetails()
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-    con = engine.connect()
-    try:
-        product = metadata.tables['product']
-        manufacturer = metadata.tables['manufacturer']
-        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.productId, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man)
-        products = con.execute(join_sel).fetchall()
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-    typeData, manuData, catData = xyz()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products, loggedIn = loggedIn)
-    #return render_template('index.html', xa = xa)
+    return render_template('index.html')
 
-@app.route("/example", methods=['POST', 'GET'])
-def example():
-    con = engine.connect()
-    try:
-        product = metadata.tables['product']
-        manufacturer = metadata.tables['manufacturer']
-        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.productId, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man)
-        products = con.execute(join_sel).fetchall()
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
+
+@app.route("/load_products", methods=['POST', 'GET'])
+def load_products():
+    model = ProductModel()
+    products = (model.get_product())
     xa = json.dumps([dict(r) for r in products])
     return jsonify(xa)
 
+@app.route("/load_types", methods=['POST', 'GET'])
+def load_types():
+    model = TypeModel()
+    products = (model.get_product())
+    xa = json.dumps([dict(r) for r in products])
+    return jsonify(xa)
 
+@app.route("/load_manufacturers", methods=['POST', 'GET'])
+def load_manufacturers():
+    model = ManufacturerModel()
+    products = (model.get_product())
+    xa = json.dumps([dict(r) for r in products])
+    return jsonify(xa)
 
-@app.route("/rodzaje")
-def rodzaje():
-    loggedIn, firstName= getLoginDetails()
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-    con = engine.connect()
-    try:
-        typeId = request.args.get("typeId")
-        product = Table('product', metadata, autoload=True, autoload_with=engine)
-        manufacturer = metadata.tables['manufacturer']
-        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.productId, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man).where(product.c.typeId == typeId)
-        prodData = con.execute(join_sel).fetchall()
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData = prodData, loggedIn = loggedIn)
-
-@app.route("/producenci")
-def producenci():
-    loggedIn, firstName= getLoginDetails()
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-    con = engine.connect()
-    try:
-        producentId = request.args.get("manuId")
-        product = Table('product', metadata, autoload=True, autoload_with=engine)
-        manufacturer = metadata.tables['manufacturer']
-        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.productId, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man).where(product.c.manufacturerId == producentId)
-        prodData = con.execute(join_sel).fetchall()
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-
-    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData, loggedIn = loggedIn)
-
-@app.route("/kategorie")
-def kategorie():
-    loggedIn, firstName= getLoginDetails()
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-    con = engine.connect()
-    try:
-        kategoriaId = request.args.get("catId")
-        product = Table('product', metadata, autoload=True, autoload_with=engine)
-        manufacturer = metadata.tables['manufacturer']
-        join_prod_man = product.join(manufacturer, product.c.manufacturerId == manufacturer.c.manufacturerId)
-        join_sel = select([product.c.productName, product.c.productId, product.c.description, product.c.priceGross, product.c.manufacturerId, manufacturer.c.name]).select_from(join_prod_man).where(product.c.categoryId == kategoriaId)
-        prodData = con.execute(join_sel).fetchall()
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-    return render_template('index.html', categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, productData=prodData, loggedIn = loggedIn)
+@app.route("/load_categories", methods=['POST', 'GET'])
+def load_categories():
+    model = CategoryModel()
+    products = (model.get_product())
+    xa = json.dumps([dict(r) for r in products])
+    return jsonify(xa)
 
 @app.route("/addToCart", methods=["GET", "POST"])
 def addToCart():
