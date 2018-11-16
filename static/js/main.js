@@ -80,6 +80,43 @@ function get_type() {
     })
 //};
 }
+function display_cart() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8080/display_cart",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            alert(response);
+            //var section = document.getElementById("white_content");
+            //alert("section ok");
+            //section.innerHTML = response;
+
+        }
+    })
+//};
+}
+
+//powinno sie uruchamiac po zlozeniu zamowienia i wyslaniu ajaxem
+//informacji do placeorder
+//function delete_cart() {
+//    $.ajax({
+//        type: "DELETE",
+//        url: "http://127.0.0.1:8080/delete_cart",
+//        dataType: "json",
+//        contentType:"application/json",
+//        success: function(response) {
+//            alert(response);
+//            //var section = document.getElementById("white_content");
+//            //alert("section ok");
+//            //section.innerHTML = response;
+//
+//        }
+//    })
+////};
+//}
+
+
 //var ref = document.getElementById("add2cart");
 //ref.onclick = add2cart();
 //function add2cart() {
