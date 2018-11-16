@@ -24,7 +24,8 @@ try:
     cat = metadata.tables['category']
     product = metadata.tables['product']
     cart = metadata.tables['cart']
-
+    delivery = metadata.tables['delivery']
+    payment = metadata.tables['payment']
 except Exception as e:
     con.close()
     #logger.error('Zaladowanie tabeli się nie powiodło:  ' + str(e) )
@@ -65,7 +66,7 @@ class CategoryModel():
 
 class CartModel():
 
-    def get_product(self):
+    def get_cart(self):
         con = engine.connect()
         product_all = con.execute(select([cart])).fetchall()
         con.close()
@@ -92,3 +93,41 @@ class CartModel():
             con.close()
 
 
+    def item_number(self):
+        try:
+            con = engine.connect()
+            item_number = con.execute("SELECT count(productId) FROM cart").fetchone()[0]
+            con.close()
+            return item_number
+        except Exception as e:
+            con.close()
+
+    def get_cart_details(self):
+        try:
+            con = engine.connect()
+            #Pobieranie detali
+            join_obj = cart.join(product, product.c.productId == cart.c.productId)
+            join_sel = select(
+                [product.c.productId, product.c.productName, product.c.manufacturerId, cart.c.cartId, cart.c.quantity,
+                 product.c.priceNet, product.c.priceGross]).select_from(join_obj)  # select statement
+            details = con.execute(join_sel).fetchall()  # fetch data
+
+            #Pobieranie z bazy danych o metodach dostawy
+            select_delivery = select([delivery])
+            delivery_data = con.execute(select_delivery).fetchall()
+
+            #Pobieranie z bazy danych o metodach płatności
+            select_payment = select([payment])
+            payment_data = con.execute(select_payment).fetchall()
+            return details, delivery_data, payment_data
+        except Exception as e:
+            con.close()
+
+    def remove_from_cart(self, cartId):
+        try:
+            con = engine.connect()
+            removeId = cartId
+            rem = delete(cart, cart.c.cartId == removeId, )
+            con.execute(rem)
+        except Exception as e:
+            con.close()

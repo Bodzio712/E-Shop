@@ -1,7 +1,6 @@
 window.onload = function() {
 alert("section ok");
-//var ref = document.getElementById('white_content');
-//ref.onload =  open_message();
+
 
     window.onload = load_data();
 
@@ -12,6 +11,7 @@ alert("section ok");
         get_type();
 
     }
+
 //PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
 function get_products() {
     $.ajax({
@@ -80,7 +80,34 @@ function get_type() {
     })
 //};
 }
-
+//var ref = document.getElementById("add2cart");
+//ref.onclick = add2cart();
+//function add2cart() {
+//    //var id = $(this).attr("productId??????");
+//    $.ajax({
+//        type: "POST",
+//        url: "http://127.0.0.1:8080/add_to_cart",// + id.toString(),
+//        dataType: "text",
+//        contentType:"application/json",
+//        success: function(response) {
+//            alert(response);
+//            alert("dodano produkt do kosza")
+//
+//        }
+//    })
+////};
+//}
+//function remove_cart() {
+//    //var id = $(this).attr("cartId??????");
+//    $.ajax({
+//        type: "PUT",
+//        url: "http://127.0.0.1:8080/remove_from_cart/",// + id.toString(),
+//        dataType: "text",
+//        success: function(response) {
+//            alert("udalo sie usunac")
+//        }
+//    });
+//}
 }
 //#######################################
 

@@ -26,6 +26,35 @@ logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 FTPADDR = "/"
 
+def xyz():
+    con = engine.connect()
+    try:
+        type = metadata.tables['type']
+        manu = metadata.tables['manufacturer']
+        cats = metadata.tables['category']
+        product = metadata.tables['product']
+        cart = metadata.tables['cart']
+
+        type_sel = select([type])
+        manu_sel = select([manu])
+        cats_sel = select([cats])
+        product_sel = select([product])
+        cart_sel = select([cart])
+
+        typeData = con.execute(type_sel).fetchall()
+        manuData = con.execute(manu_sel).fetchall()
+        catData = con.execute(cats_sel).fetchall()
+        productData = con.execute(product_sel).fetchall()
+        cartData = con.execute(cart_sel).fetchall()
+
+    except Exception as e:
+        con.close()
+        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + url_for('root'))
+     #otworz contabele
+     #dodaj do tabelki
+     #zamknij conn
+    con.close()
+    return (typeData, manuData, catData)
 
 def getLoginDetails():
     with sqlite3.connect('database.db') as conn:
@@ -41,15 +70,7 @@ def getLoginDetails():
     conn.close()
     return (loggedIn, firstName)
 
-def item_number():
-    con = engine.connect()
-    try:
-        noOfItems = con.execute("SELECT count(productId) FROM cart").fetchone()[0]
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url )
-    con.close()
-    return noOfItems
+
 
 @app.route("/", methods=['POST', 'GET'])
 def root():
@@ -58,122 +79,73 @@ def root():
 
 @app.route("/load_products", methods=['POST', 'GET'])
 def load_products():
-    model = ProductModel()
-    products = (model.get_product())
-    xa = json.dumps([dict(r) for r in products])
-    return jsonify(xa)
+    if request.method == 'GET':
+        model = ProductModel()
+        products = (model.get_product())
+        xa = json.dumps([dict(r) for r in products])
+        return jsonify(xa)
+    return redirect(url_for('root'))
 
 @app.route("/load_types", methods=['POST', 'GET'])
 def load_types():
     model = TypeModel()
-    products = (model.get_product())
-    xa = json.dumps([dict(r) for r in products])
+    types = (model.get_product())
+    xa = json.dumps([dict(r) for r in types])
     return jsonify(xa)
 
 @app.route("/load_manufacturers", methods=['POST', 'GET'])
 def load_manufacturers():
     model = ManufacturerModel()
-    products = (model.get_product())
-    xa = json.dumps([dict(r) for r in products])
+    manufacturers = (model.get_product())
+    xa = json.dumps([dict(r) for r in manufacturers])
     return jsonify(xa)
 
 @app.route("/load_categories", methods=['POST', 'GET'])
 def load_categories():
     model = CategoryModel()
-    products = (model.get_product())
-    xa = json.dumps([dict(r) for r in products])
+    categories = (model.get_product())
+    xa = json.dumps([dict(r) for r in categories])
     return jsonify(xa)
 
-@app.route("/addToCart", methods=["GET", "POST"])
-def addToCart():
-        loggedIn, firstName = getLoginDetails()
-        for key, value in request.form.items():
-            print("key: {0}, value: {1}".format(key, value))
-        print("QUANTITY:")
-        quant = request.form['liczba']
-        typeData, manuData, catData = xyz()
-        item_no = item_number()
-        con = engine.connect()
-        try:
-            con = engine.connect()
-            productId = int(request.args.get('productId'))
-            clientId = 99
-            cart = metadata.tables['cart']
-            ins2 = cart.insert().values(clientId = clientId, productId=productId, quantity=quant)
-            x = con.execute(ins2)
+#######--------Cart functions
+        # @app.route("/add_to_cart/<id>", methods=['POST', 'GET', 'PUT'])
+        # def add_to_cart():
+        #     clientId = str(id)
+        #     #productId, quantity tak samo!!!
+        #     model = CartModel()
+        #     add = (model.add_cart(clientId, productId, quantity))
+        #     return add
+        #
+        # @app.route("/remove_from_cart/<id>", methods=['POST', 'GET'])
+        # def remove_from_cart():
+        #     cartId = str(id)
+        #     model = CartModel()
+        #     remove = (model.remove_from_cart(cartId))
+        #     xa = json.dumps(remove)
+        #     return jsonify(xa)
 
-        except Exception as e:
-            con.close()
-            logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-        con.close()
-        return redirect(url_for('root'))
-        # commit the record the database
+@app.route("/display_cart", methods=['POST', 'GET'])
+def get_cart_details():
+    model = CartModel()
+    details = (model.get_cart_details())
+    xa = json.dumps([dict(r) for r in details])
+    return jsonify(xa)
 
-#        with sqlite3.connect('database.db') as conn:
-#            cur = conn.cursor()
-  #          cur.execute("SELECT userId FROM users WHERE email = '" + session['email'] + "'")
-  #          userId = cur.fetchone()[0]
-  #          try:
-#            cur.execute("INSERT INTO cart (clientId, productId) VALUES (?, ?)", (clientId, productId))
-#            conn.commit()
-#                msg = "Added successfully"
-#            except:
-#                conn.rollback()
-#                msg = "Error occured"
-#        conn.close()
-
-
-@app.route("/cart")
-def cart():
-    loggedIn, firstName= getLoginDetails()
-    loggedIn = "YES"
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-
-    if 'email' not in session:
-        return redirect(url_for('loginForm'))
-    email = session['email']
-
-    con = engine.connect()
-    try:
-        product = metadata.tables['product']
-        cart = metadata.tables['cart']
-        delivery = metadata.tables['delivery']
-        payment = metadata.tables['payment']
-        meta = select([product, cart], cart.c.productId == product.c.productId)
-        #join = cart.join(product, product.c.productId == cart.c.productId)
-        #meta = select([cart.c.cartId, cart.c.productId, product.c.categoryId, product.c.productName]).select_from(join)
-        #cp_data = engine.execute(meta).fetchall()
-        join_obj = cart.join(product, product.c.productId == cart.c.productId)
-        join_sel = select([product.c.productId, product.c.productName, product.c.manufacturerId, cart.c.cartId, cart.c.quantity, product.c.priceNet, product.c.priceGross]).select_from(join_obj)#select statement
-        cp_data = con.execute(join_sel).fetchall()#fetch data
-
-        # Pobieranie z bazy danych o metodach dostawy
-        select_delivery = select([delivery])
-        delivery_data = con.execute(select_delivery).fetchall()
-
-        # Pobieranie z bazy danych o metodach płatności
-        select_payment = select([payment])
-        paymant_data = con.execute(select_payment).fetchall()
-
-
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-    return render_template("index.html", categoryData=catData, typeData=typeData, manuData=manuData, noOfItems=item_no, products=cp_data, loggedIn = loggedIn, deliveryData=delivery_data, paymentData=paymant_data)
-
+@app.route("/delete_cart", methods=['POST', 'GET', 'DELETE'])
 def delete_cart():
-    loggedIn, firstName= getLoginDetails()
-    try:
-        con = engine.connect()
-        cart = metadata.tables['cart']
-        d = delete(cart)
-        con.execute(d)
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
+    model = CartModel()
+    delete = (model.delete_cart())
+    return delete
+
+@app.route("/item_number", methods=['POST', 'GET'])
+def item_number():
+    model = CartModel()
+    item_number = (model.item_number())
+    xa = json.dumps(item_number)
+    return jsonify(xa)
+
+
+
 
 @app.route("/placeOrder", methods=["POST"])
 def placeOrder():
@@ -234,22 +206,6 @@ def placeOrder():
 
   delete_cart()
   return redirect(url_for('root'))
-
-
-@app.route("/removeCart")
-def removeFromCart():
-    loggedIn, firstName= getLoginDetails()
-    con = engine.connect()
-    try:
-        removeId = request.args.get("cartId")
-        cart = metadata.tables['cart']
-        d = delete(cart, cart.c.cartId == removeId, )
-        con.execute(d)
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-    return redirect(url_for('cart'))
 
 
 @app.route("/account/profil")
