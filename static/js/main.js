@@ -1,27 +1,86 @@
 window.onload = function() {
+alert("section ok");
+//var ref = document.getElementById('white_content');
+//ref.onload =  open_message();
 
-var ref = document.getElementById('white_content');
-ref.onload =  open_message();
+    window.onload = load_data();
 
+    function load_data() {
+        get_products();
+        get_category();
+        get_manu();
+        get_type();
+
+    }
 //PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
-function open_message() {
+function get_products() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/example",
+        url: "http://127.0.0.1:8080/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
             alert(response);
-            var section = document.getElementById("white_content");
-            alert("section ok");
-
-
-            alert("no error");
-            section.innerHTML = response;
+            //var section = document.getElementById("white_content");
+            //alert("section ok");
+            //section.innerHTML = response;
 
         }
-    });
-};
+    })
+//};
+}
+
+function get_category() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8080/load_categories",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            alert(response);
+            //var section = document.getElementById("white_content");
+            //alert("section ok");
+            //section.innerHTML = response;
+
+        }
+    })
+//};
+}
+
+function get_manu() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8080/load_manufacturers",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            alert(response);
+            //var section = document.getElementById("white_content");
+            //alert("section ok");
+            //section.innerHTML = response;
+
+        }
+    })
+//};
+}
+
+function get_type() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:8080/load_types",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            alert(response);
+            //var section = document.getElementById("white_content");
+            //alert("section ok");
+            //section.innerHTML = response;
+
+        }
+    })
+//};
+}
+
 }
 //#######################################
 
