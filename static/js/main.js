@@ -1,8 +1,10 @@
 window.onload = function() {
-alert("section ok");
+//alert("section ok");
 
 
     window.onload = load_data();
+
+    window.onload = test();
 
     function load_data() {
         get_products();
@@ -12,15 +14,32 @@ alert("section ok");
 
     }
 
-//PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
-function get_products() {
+    function test() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_products",
+        url: "http://127.0.0.1:5000/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
             alert(response);
+            //var section = document.getElementById("white_content");
+            //alert("section ok");
+            //section.innerHTML = response;
+
+        }
+    })
+//};
+}
+
+//PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
+function get_products() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/load_products",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            //alert(response);
             //var section = document.getElementById("white_content");
             //alert("section ok");
             //section.innerHTML = response;
@@ -33,11 +52,11 @@ function get_products() {
 function get_category() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_categories",
+        url: "http://127.0.0.1:5000/load_categories",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            alert(response);
+            //alert(response);
             //var section = document.getElementById("white_content");
             //alert("section ok");
             //section.innerHTML = response;
@@ -50,11 +69,11 @@ function get_category() {
 function get_manu() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_manufacturers",
+        url: "http://127.0.0.1:5000/load_manufacturers",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            alert(response);
+            //alert(response);
             //var section = document.getElementById("white_content");
             //alert("section ok");
             //section.innerHTML = response;
@@ -67,11 +86,11 @@ function get_manu() {
 function get_type() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_types",
+        url: "http://127.0.0.1:5000/load_types",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            alert(response);
+            //alert(response);
             //var section = document.getElementById("white_content");
             //alert("section ok");
             //section.innerHTML = response;
@@ -83,11 +102,11 @@ function get_type() {
 function display_cart() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/display_cart",
+        url: "http://127.0.0.1:5000/display_cart",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            alert(response);
+            //alert(response);
             //var section = document.getElementById("white_content");
             //alert("section ok");
             //section.innerHTML = response;
@@ -102,7 +121,7 @@ function display_cart() {
 //function delete_cart() {
 //    $.ajax({
 //        type: "DELETE",
-//        url: "http://127.0.0.1:8080/delete_cart",
+//        url: "http://127.0.0.1:5000/delete_cart",
 //        dataType: "json",
 //        contentType:"application/json",
 //        success: function(response) {
@@ -123,7 +142,7 @@ function display_cart() {
 //    //var id = $(this).attr("productId??????");
 //    $.ajax({
 //        type: "POST",
-//        url: "http://127.0.0.1:8080/add_to_cart",// + id.toString(),
+//        url: "http://127.0.0.1:5000/add_to_cart",// + id.toString(),
 //        dataType: "text",
 //        contentType:"application/json",
 //        success: function(response) {
@@ -138,7 +157,7 @@ function display_cart() {
 //    //var id = $(this).attr("cartId??????");
 //    $.ajax({
 //        type: "PUT",
-//        url: "http://127.0.0.1:8080/remove_from_cart/",// + id.toString(),
+//        url: "http://127.0.0.1:5000/remove_from_cart/",// + id.toString(),
 //        dataType: "text",
 //        success: function(response) {
 //            alert("udalo sie usunac")

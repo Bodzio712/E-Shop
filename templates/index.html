@@ -17,12 +17,6 @@
 </head>
 <body>
 <!-- Navbar z buttonami-->
-
-
-<div class="white_content"  id="white_content"></div>
-
-
-
     <div class="navbar">
 
          <!-- Kategorie-->
@@ -90,9 +84,16 @@
 {% endif %}
     </div>
 
+<div class="white_content"  id="white_content"></div>
+<table>
+<tbody id="productsTable">
+    {% for link in productData %}
+    {% endfor %}
+</tbody>
+</table>
 
 
-{% if productData%}
+<!--{% if productData%} -->
 <div class="basket_1">
       <div class="basket-labels">
         <ul>
@@ -139,7 +140,7 @@
       </div>
   		{% endfor %}
 </div>
-{%  endif %}
+<!-- {%  endif %} -->
 
 
 
