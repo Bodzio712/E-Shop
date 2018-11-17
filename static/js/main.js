@@ -21,11 +21,13 @@ window.onload = function() {
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            alert(response);
-            //var section = document.getElementById("white_content");
-            //alert("section ok");
-            //section.innerHTML = response;
+            var $div = $('#white_content')
+            data = JSON.parse(response)
+            for(i in data){
+                alert(data[i][0])
+            }
 
+            alert(data);
         }
     })
 //};
