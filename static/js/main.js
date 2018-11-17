@@ -4,6 +4,7 @@ window.onload = function() {
 
     window.onload = load_data();
 
+    add_navbar();
     test();
 
     function load_data() {
@@ -11,6 +12,51 @@ window.onload = function() {
         get_category();
         get_manu();
         get_type();
+
+    }
+
+    function add_navbar() {
+        $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/load_categories",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var $cat = $('#catDropdown');
+            for(i in data) {
+                $cat.append('<a href="/kategorie?catId=' + data[i].categoryId + '">' + data[i].name +'</a>')
+            }
+        }
+    })
+
+         $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/load_types",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var $type = $('#typeDropdown');
+            for(i in data) {
+                $type.append('<a href="/rodzaje?typeId='+ data[i].typeId +'">' + data[i].name +'</a>')
+            }
+        }
+    })
+
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/load_manufacturers",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var $man = $('#manDropdown');
+            for(i in data) {
+                $man.append('<a href="/producenci?manuId='+ data[i].manufacturerId+'">'+ data[i].name +'</a>')
+            }
+        }
+    })
 
     }
 
@@ -22,17 +68,7 @@ function test() {
         contentType:"application/json",
         success: function(response) {
             var data = JSON.parse(response);
-            var $table = $('#white_content');
-            $table.append('<div class="basket_1">');
-            $table.append('<div class="basket-labels">' +
-                '<ul>' +
-                '          <li class="item item-heading">Nazwa</li>' +
-                '          <li class="price">Cena jedn. brutto</li>' +
-                '          <li class="quantity">Szczegóły</li>' +
-                '          <li class="producent">Producent</li>' +
-                '          <li class="quantity">Ilość</li>' +
-                '</ul>'
-                + '</div>');
+            var $table = $('#products');
             for(i in data) {
                 $table.append('<div class="basket-product">' +
                     '        <div class="item">' +

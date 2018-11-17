@@ -17,18 +17,14 @@
 </head>
 <body>
 <!-- Navbar z buttonami-->
-    <div class="navbar">
+    <div class="navbar" id="navbar">
 
          <!-- Kategorie-->
         <div class="dropdown">
             <button class="dropbtn" >Kategorie
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content" id="myDropdown">
-                {% for link in categoryData %}
-                <a href="/kategorie?catId={{link[0]}}">{{link[1]}}</a>
-                {% endfor %}
-            </div>
+            <div class="dropdown-content" id="catDropdown"></div>
         </div>
 
         <!-- Rodzaje-->
@@ -36,11 +32,7 @@
             <button class="dropbtn">Rodzaje
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content" id="myDropdown">
-                {% for link in typeData %}
-                <a href="/rodzaje?typeId={{link[0]}}">{{ link.name}}</a>
-                {% endfor %}
-            </div>
+            <div class="dropdown-content" id="typeDropdown"></div>
         </div>
 
         <!-- Producenci-->
@@ -48,11 +40,7 @@
             <button class="dropbtn">Producenci
                 <i class="fa fa-caret-down" ></i>
             </button>
-            <div class="dropdown-content" id="myDropdown">
-                {% for link in manuData %}
-                <a href="/producenci?manuId={{link[0]}}">{{link[1]}}</a>
-                {% endfor %}
-            </div>
+            <div class="dropdown-content" id="manDropdown"></div>
         </div>
 
 		{% if not loggedIn %}
@@ -84,7 +72,19 @@
 {% endif %}
     </div>
 
-<div class="white_content"  id="white_content"></div>
+<div class="basket_1">
+      <div class="basket-labels">
+        <ul>
+          <li class="item item-heading">Nazwa</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Szczegóły</li>
+          <li class="producent">Producent</li>
+          <li class="quantity">Ilość</li>
+        </ul>
+      </div>
+
+        <div id="products"></div>
+</div>
 
 
 <!--{% if productData%} -->
