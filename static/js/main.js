@@ -4,7 +4,7 @@ window.onload = function() {
 
     window.onload = load_data();
 
-    window.onload = test();
+    test();
 
     function load_data() {
         get_products();
@@ -14,23 +14,64 @@ window.onload = function() {
 
     }
 
-    function test() {
+function test() {
     $.ajax({
         type: "GET",
         url: "http://127.0.0.1:5000/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            var $div = $('#white_content')
-            data = JSON.parse(response)
-            for(i in data){
-                alert(data[i][0])
-            }
+            var data = JSON.parse(response);
+            var $table = $('#white_content');
+            $table.append('<div class="basket_1">');
+            $table.append('<div class="basket-labels">' +
+                '<ul>' +
+                '          <li class="item item-heading">Nazwa</li>' +
+                '          <li class="price">Cena jedn. brutto</li>' +
+                '          <li class="quantity">Szczegóły</li>' +
+                '          <li class="producent">Producent</li>' +
+                '          <li class="quantity">Ilość</li>' +
+                '</ul>'
+                + '</div>');
+            for(i in data) {
+                $table.append('<div class="basket-product">' +
+                    '        <div class="item">' +
+                    '          <div class="product-details">' +
+                    '            <h1><strong><span class="item-quantity"> </span>' + data[i].description +'</strong></h1>' +
+                    '            <p><strong>' + data[i].productName + '</strong></p>' +
+                    '          </div>' +
+                    '        </div>' +
+                    '        <div class="price">' + data[i].priceGross+'</div>' +
+                    '' +
+                    '' +
+                    '        <div class = "quantity" rel="modal:open">' +
+                    '            <a href="#ex1" rel="modal:open" class="button">Szczegóły</a>' +
+                    '            <div id="ex1" class="modal">' +
+                    '                <p>' + data[i].description+'</p>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '' +
+                    '        <div class="producent">{{link.name}}</div>' +
+                    '' +
+                    '        <div class = "quantity">' +
+                    '              <form action="/addToCart?productId=' + data[i].productId +'" method="post" href="/addToCart?productId=' + data[i].productId+'">' +
+                    '                       <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>' +
+                    '                       <input type = "hidden"  value =' + data[i].productId+' />' +
+                    '                  <div class = "remove">' +
+                    '                       <td><input type="submit" value="Dodaj do koszyka" id="add2cart"/></td>' +
+                    '                  </div>' +
+                    '              </form>' +
+                    '        </div>' +
+                    '' +
+                    '' +
+                    '' +
+                    '</div>')
 
-            alert(data);
+            }
+            $table.append('</div>');
+            $table.append('</div>');
         }
     })
-//};
 }
 
 //PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
