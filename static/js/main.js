@@ -5,7 +5,7 @@ window.onload = function() {
     window.onload = load_data();
 
     add_navbar();
-    test();
+    showProducts();
 
     function load_data() {
         get_products();
@@ -14,6 +14,7 @@ window.onload = function() {
         get_type();
 
     }
+
 
     function add_navbar() {
         $.ajax({
@@ -25,7 +26,9 @@ window.onload = function() {
             var data = JSON.parse(response);
             var $cat = $('#catDropdown');
             for(i in data) {
-                $cat.append('<a href="/kategorie?catId=' + data[i].categoryId + '">' + data[i].name +'</a>')
+                obj=data[i].categoryId;
+                category="category";
+                $cat.append('<a onclick="showProducts(\'' + category + '\',' + obj + ')">' + data[i].name +'</a>')
             }
         }
     })
@@ -39,7 +42,9 @@ window.onload = function() {
             var data = JSON.parse(response);
             var $type = $('#typeDropdown');
             for(i in data) {
-                $type.append('<a href="/rodzaje?typeId='+ data[i].typeId +'">' + data[i].name +'</a>')
+                obj=data[i].typeId;
+                category="type";
+                $type.append('<a onclick="showProducts(\'' + category + '\',' + obj + ')">' + data[i].name +'</a>');
             }
         }
     })
@@ -53,62 +58,15 @@ window.onload = function() {
             var data = JSON.parse(response);
             var $man = $('#manDropdown');
             for(i in data) {
-                $man.append('<a href="/producenci?manuId='+ data[i].manufacturerId+'">'+ data[i].name +'</a>')
+                obj=data[i].manufacturerId;
+                category="manufacturer";
+                $man.append('<a onclick="showProducts(\'' + category + '\',' + obj + ')">' + data[i].name +'</a>');
             }
         }
     })
 
     }
 
-function test() {
-    $.ajax({
-        type: "GET",
-        url: "http://127.0.0.1:5000/load_products",
-        dataType: "json",
-        contentType:"application/json",
-        success: function(response) {
-            var data = JSON.parse(response);
-            var $table = $('#products');
-            for(i in data) {
-                $table.append('<div class="basket-product">' +
-                    '        <div class="item">' +
-                    '          <div class="product-details">' +
-                    '            <h1><strong><span class="item-quantity"> </span>' + data[i].description +'</strong></h1>' +
-                    '            <p><strong>' + data[i].productName + '</strong></p>' +
-                    '          </div>' +
-                    '        </div>' +
-                    '        <div class="price">' + data[i].priceGross+'</div>' +
-                    '' +
-                    '' +
-                    '        <div class = "quantity" rel="modal:open">' +
-                    '            <a href="#ex1" rel="modal:open" class="button">Szczegóły</a>' +
-                    '            <div id="ex1" class="modal">' +
-                    '                <p>' + data[i].description+'</p>' +
-                    '            </div>' +
-                    '        </div>' +
-                    '' +
-                    '        <div class="producent">{{link.name}}</div>' +
-                    '' +
-                    '        <div class = "quantity">' +
-                    '              <form action="/addToCart?productId=' + data[i].productId +'" method="post" href="/addToCart?productId=' + data[i].productId+'">' +
-                    '                       <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>' +
-                    '                       <input type = "hidden"  value =' + data[i].productId+' />' +
-                    '                  <div class = "remove">' +
-                    '                       <td><input type="submit" value="Dodaj do koszyka" id="add2cart"/></td>' +
-                    '                  </div>' +
-                    '              </form>' +
-                    '        </div>' +
-                    '' +
-                    '' +
-                    '' +
-                    '</div>')
-
-            }
-            $table.append('</div>');
-            $table.append('</div>');
-        }
-    })
-}
 
 //PRZYKLADOWA FUNKCJA AJAX. POBIERA DANE Z FLASK URL I WYRZUCA DO <DIV WHITE_CONTENT>
 function get_products() {
@@ -341,6 +299,81 @@ function updateSumItems() {
   });
   $('.total-items').text(sumItems);
 }
+
+function showProducts(attribute="", number=0){
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/load_products",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var toShowData = [];
+            for(i in data) {
+                if (attribute == "") {
+                    toShowData = data;
+                } else if (attribute == "category") {
+                    if(data[i].categoryId == number) {
+                        toShowData.push(data[i]);
+                    }
+                } else if (attribute == "type") {
+                    if(data[i].typeId == number) {
+                        toShowData.push(data[i]);
+                    }
+
+                } else if (attribute == "manufacturer") {
+                    if(data[i].manufacturerId == number) {
+                        toShowData.push(data[i]);
+                    }
+                }
+            }
+            makeProductsTable(toShowData);
+            }
+        })
+}
+
+function makeProductsTable(data) {
+    $table = $('#products');
+    $table.html('');
+            for(i in data) {
+                $table.append('<div class="basket-product">' +
+                    '        <div class="item">' +
+                    '          <div class="product-details">' +
+                    '            <h1><strong><span class="item-quantity"> </span>' + data[i].description +'</strong></h1>' +
+                    '            <p><strong>' + data[i].productName + '</strong></p>' +
+                    '          </div>' +
+                    '        </div>' +
+                    '        <div class="price">' + data[i].priceGross+'</div>' +
+                    '' +
+                    '' +
+                    '        <div class = "quantity" rel="modal:open">' +
+                    '            <a href="#ex1" rel="modal:open" class="button">Szczegóły</a>' +
+                    '            <div id="ex1" class="modal">' +
+                    '                <p>' + data[i].description+'</p>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '' +
+                    '        <div class="producent">{{link.name}}</div>' +
+                    '' +
+                    '        <div class = "quantity">' +
+                    '              <form action="/addToCart?productId=' + data[i].productId +'" method="post" href="/addToCart?productId=' + data[i].productId+'">' +
+                    '                       <td><input type = "number" name = "liczba" min = "0" maxlength="2" size="2"/></td>' +
+                    '                       <input type = "hidden"  value =' + data[i].productId+' />' +
+                    '                  <div class = "remove">' +
+                    '                       <td><input type="submit" value="Dodaj do koszyka" id="add2cart"/></td>' +
+                    '                  </div>' +
+                    '              </form>' +
+                    '        </div>' +
+                    '' +
+                    '' +
+                    '' +
+                    '</div>')
+
+            }
+            $table.append('</div>');
+            $table.append('</div>');
+}
+
 
 /* Remove item from cart
 function removeItem(removeButton) {
