@@ -26,10 +26,20 @@ try:
     cart = metadata.tables['cart']
     delivery = metadata.tables['delivery']
     payment = metadata.tables['payment']
+    order = metadata.tables['orders']
 except Exception as e:
     con.close()
     #logger.error('Zaladowanie tabeli się nie powiodło:  ' + str(e) )
 con.close()
+
+
+class OrdersModel():
+
+    def get_orders(self):
+        con = engine.connect()
+        order_all = con.execute(select([order])).fetchall()
+        con.close()
+        return order_all
 
 
 class ProductModel():

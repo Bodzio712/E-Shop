@@ -138,6 +138,14 @@ def get_cart():
     xa = json.dumps([dict(r) for r in details])
     return jsonify(xa)
 
+@app.route("/display_orders", methods=['POST', 'GET'])
+def get_orders():
+    model = OrdersModel()
+    details = (model.get_orders())
+    xa = json.dumps([dict(r) for r in details])
+    return jsonify(xa)
+
+
 @app.route("/delete_cart", methods=['POST', 'GET', 'DELETE'])
 def delete_cart():
     model = CartModel()
@@ -237,30 +245,7 @@ def accountProfil():
 
 @app.route("/account/orders")
 def accountOrders():
-    loggedIn, firstName= getLoginDetails()
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-    con = engine.connect()
-    try:
-        email = session['email']
-        client = metadata.tables['client']
-        select_clientId = select([client]).where(client.c.email == email)
-        client_data = con.execute(select_clientId).fetchall()
-
-        for row in client_data:
-            clientId = row.clientId
-
-        orders = metadata.tables['orders']
-        delivery = metadata.tables['delivery']
-        payment = metadata.tables['payment']
-        join_ord = orders.join(delivery, orders.c.deliveryId == delivery.c.deliveryId)
-        ord_sel = select([orders.c.deliveryId, orders.c.productName, orders.c.valueGross, orders.c.quantity, delivery.c.deliveryType]).select_from(join_ord).where(orders.c.clientId == clientId)
-        productData = con.execute(ord_sel).fetchall()
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    con.close()
-    return render_template("index.html", orders=productData, categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, loggedIn = loggedIn)
+    return render_template("orders.html")
 
 
 

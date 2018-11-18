@@ -8,6 +8,7 @@ window.onload = function() {
     showProducts(); //Wyswitlanie produktów
     show_cart_droptables(); // Wyświetlanie mozliowosci płatności i dostaw
     showCartItems(); // Wyswirtlanie zawartości koszyka
+    showOrders(); // Wyswietlanie zamówionych produktów
 
     function load_data() {
         get_products();
@@ -16,6 +17,33 @@ window.onload = function() {
         get_type();
 
     }
+
+    //TODO: Do poprawienia
+        function showOrders() {
+        $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/display_orders",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var $ord = $('#orders');
+            for(i in data) {
+                //alert(data[i].productName);
+                $ord.append('<div class="item">' +
+                    '          <div class="product-details">' +
+                    '            <p><strong>'+data[i].productName+' </strong></p>' +
+                    '          </div>' +
+                    '        </div>' +
+                    '        <div class="price">'+data[i].valueGross+'</div>' +
+                    '        <div class = "quantity">{{ link.quantity }}</div>' +
+                    '<div class="delivery">'+data[i].deliveryId+'</div>')
+            }
+        }
+    })
+    }
+
+
 //TODO: Do poprawienia. Zwraca złe dane
     function showCartItems() {
         $.ajax({
@@ -27,7 +55,7 @@ window.onload = function() {
             var data = JSON.parse(response);
             var select = document.getElementById("basket");
             for(i in data) {
-                alert(data[i].productName);
+                //alert(data[i].productName);
             }
         }
     })
