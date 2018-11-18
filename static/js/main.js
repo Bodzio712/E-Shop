@@ -4,9 +4,10 @@ window.onload = function() {
 
     window.onload = load_data();
 
-    add_navbar();
-    showProducts();
-    show_cart_droptables();
+    add_navbar(); //dodawanie navbara
+    showProducts(); //Wyswitlanie produktów
+    show_cart_droptables(); // Wyświetlanie mozliowosci płatności i dostaw
+    showCartItems(); // Wyswirtlanie zawartości koszyka
 
     function load_data() {
         get_products();
@@ -14,6 +15,22 @@ window.onload = function() {
         get_manu();
         get_type();
 
+    }
+//TODO: Do poprawienia. Zwraca złe dane
+    function showCartItems() {
+        $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/display_cart_items",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var select = document.getElementById("basket");
+            for(i in data) {
+                alert(data[i].productName);
+            }
+        }
+    })
     }
 
     function show_cart_droptables() {

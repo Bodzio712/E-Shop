@@ -131,6 +131,13 @@ def get_cart_details():
     xa = json.dumps([dict(r) for r in details])
     return jsonify(xa)
 
+@app.route("/display_cart_items", methods=['POST', 'GET'])
+def get_cart():
+    model = CartModel()
+    details = (model.get_cart())
+    xa = json.dumps([dict(r) for r in details])
+    return jsonify(xa)
+
 @app.route("/delete_cart", methods=['POST', 'GET', 'DELETE'])
 def delete_cart():
     model = CartModel()
@@ -278,30 +285,33 @@ def register():
             if request.method == 'POST':
                 # Parse form data
                 password = request.form['password']
+                cpassword = request.form['cpassword']
                 email = request.form['email']
                 firstName = request.form['firstName']
                 lastName = request.form['lastName']
                 address = request.form['address']
                 tel = request.form['phone']
 
-                con = engine.connect()
-                try:
-                    client = metadata.tables['client']
-                    client_insert = client.insert().values(
-                        firstName=firstName,
-                        lastName=lastName,
-                        clientAddress=address,
-                        email=email,
-                        phone=tel,
-                        deliveryId = 1,
-                        paymentId = 1,
-                        password = hashlib.md5(password.encode()).hexdigest())
-                    save = con.execute(client_insert)
-                except Exception as e:
+                if password == cpassword:
+                    con = engine.connect()
+                    try:
+                        client = metadata.tables['client']
+                        client_insert = client.insert().values(
+                            firstName=firstName,
+                            lastName=lastName,
+                            clientAddress=address,
+                            email=email,
+                            phone=tel,
+                            deliveryId = 1,
+                            paymentId = 1,
+                            password = hashlib.md5(password.encode()).hexdigest())
+                        save = con.execute(client_insert)
+                    except Exception as e:
+                        con.close()
+                        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
                     con.close()
-                    logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-                con.close()
-            return redirect(url_for('root'))
+                    return redirect(url_for('root'))
+                return redirect(url_for('registerForm'))
 
 @app.route("/loginForm", methods=['GET', 'POST'])
 def loginForm():
