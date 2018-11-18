@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+</head>
+<div class="navbar" id="navbar">
+
+         <!-- Kategorie-->
+        <div class="dropdown">
+            <button class="dropbtn" >Kategorie
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="catDropdown"></div>
+        </div>
+
+        <!-- Rodzaje-->
+        <div class="dropdown">
+            <button class="dropbtn">Rodzaje
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="typeDropdown"></div>
+        </div>
+
+        <!-- Producenci-->
+        <div class="dropdown">
+            <button class="dropbtn">Producenci
+                <i class="fa fa-caret-down" ></i>
+            </button>
+            <div class="dropdown-content" id="manDropdown"></div>
+        </div>
+</div>
+<body>
+<main>
+<div class="basket">
+      <div class="basket-labels">
+        <ul>
+          <li class="item item-heading">Produkt</li>
+          <li class="price">Cena jedn. brutto</li>
+          <li class="quantity">Ilość szt.</li>
+          <li class="subtotal">Suma brutto</li>
+        </ul>
+      </div>
+		{% for link in products %}
+      <div class="basket-product">
+        <div class="item">
+          <div class="product-details">
+            <h1><strong><span class="item-quantity">{{link.quantity}} x </span> {{link.productName}} </strong></h1>
+            <p><strong>Navy, Size 18</strong></p>
+            <p>Product Code - 232321939</p>
+          </div>
+        </div>
+
+        <div class="price">{{link.priceGross}}</div>
+        <div class="quantity">
+          <input type="number" value="{{ link.quantity }}" min="1" class="quantity-field">
+        </div>
+        <div class="subtotal">104.00</div>
+        <a class="remove" href="/removeCart?cartId={{link.cartId}}">
+          <button>Remove</button>
+        </a>
+      </div>
+  		{% endfor %}
+	</div>
+
+	 <aside>
+      <div class="summary">
+        <div class="summary-total-items"><span class="total-items"></span> Przedmioty w koszyku</div>
+        <div class="summary-subtotal">
+          <div class="subtotal-title">Subtotal</div>
+          <div class="subtotal-value final-value" id="basket-subtotal">130.00</div>
+          <div class="summary-promo hide">
+            <div class="promo-title">Promotion</div>
+            <div class="promo-value final-value" id="basket-promo"></div>
+          </div>
+        </div>
+        <div class="summary-delivery">
+          <select name="delivery-collection" class="summary-delivery-selection" form="checkoutform" id="deliveryOptions">
+			  <option value="0" selected="selected">Wybierz dostawę</option>
+          </select>
+        </div>
+		  <div class="summary-delivery">
+          <select name="payment-collection" class="summary-delivery-selection" form="checkoutform" id="paymentOptions">
+              <option value="0" selected="selected">Wybierz płatność</option>
+          </select>
+        </div>
+        <div class="summary-total">
+          <div class="total-title">Total</div>
+          <div class="total-value final-value" id="basket-total">130.00</div>
+        </div>
+        <div class="summary-checkout">
+            <form action="/placeOrder" href="/placeOrder" method="POST" id="checkoutform">
+                <input type="submit" value="Zapłać" class="checkout-cta"/>
+            </form>
+        </div>
+      </div>
+    </aside>
+</main>
+</body>
+</html>

@@ -144,7 +144,19 @@ def item_number():
     xa = json.dumps(item_number)
     return jsonify(xa)
 
+@app.route("/delivery_details", methods=['POST', 'GET'])
+def delivery_detalis():
+    model = CartModel()
+    delivery_data = (model.get_delivery_info())
+    xa = json.dumps([dict(r) for r in delivery_data])
+    return jsonify(xa)
 
+@app.route("/payment_details", methods=['POST', 'GET'])
+def payment_detalis():
+    model = CartModel()
+    payment_data = (model.get_payment_info())
+    xa = json.dumps([dict(r) for r in payment_data])
+    return jsonify(xa)
 
 
 @app.route("/placeOrder", methods=["POST"])
@@ -329,6 +341,17 @@ def login():
         else:
             logger.error('Failed to upload to ftp: ' + request.base_url)
 
+@app.route("/cart")
+def cart():
+    loggedIn, firstName = getLoginDetails()
+    #TODO: Odkomentować weryfikację
+    '''
+    if loggedIn == True:
+        return render_template("cart.html")
+    else:
+        return redirect(url_for('root'))
+    '''
+    return render_template("cart.html")
 
 @app.route("/logout")
 def logout():

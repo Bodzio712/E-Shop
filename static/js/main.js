@@ -6,6 +6,7 @@ window.onload = function() {
 
     add_navbar();
     showProducts();
+    show_cart_droptables();
 
     function load_data() {
         get_products();
@@ -15,6 +16,40 @@ window.onload = function() {
 
     }
 
+    function show_cart_droptables() {
+        $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/delivery_details",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var select = document.getElementById("deliveryOptions");
+            for(i in data) {
+                var option = document.createElement("option");
+                option.value = data[i].deliveryId;
+                option.text = data[i].deliveryType;
+                select.add(option, null);
+            }
+        }
+    })
+        $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/payment_details",
+        dataType: "json",
+        contentType:"application/json",
+        success: function(response) {
+            var data = JSON.parse(response);
+            var select = document.getElementById("paymentOptions");
+            for(i in data) {
+                var option = document.createElement("option");
+                option.value = data[i].paymentId;
+                option.text = data[i].paymentType;
+                select.add(option, null);
+            }
+        }
+    })
+    }
 
     function add_navbar() {
         $.ajax({

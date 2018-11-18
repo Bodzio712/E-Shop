@@ -102,6 +102,27 @@ class CartModel():
         except Exception as e:
             con.close()
 
+    def get_delivery_info(self):
+        try:
+            con = engine.connect()
+            #Pobieranie z bazy danych o metodach dostawy
+            select_delivery = select([delivery])
+            delivery_data = con.execute(select_delivery).fetchall()
+            return delivery_data
+        except Exception as e:
+            con.close()
+
+    def get_payment_info(self):
+        try:
+            con = engine.connect()
+            #Pobieranie z bazy danych o metodach dostawy
+            select_payment = select([payment])
+            payment_data = con.execute(select_payment).fetchall()
+            return payment_data
+        except Exception as e:
+            con.close()
+
+
     def get_cart_details(self):
         try:
             con = engine.connect()
