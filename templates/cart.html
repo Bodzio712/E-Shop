@@ -19,7 +19,7 @@
 </div>
 <body>
 <main>
-<div class="basket">
+<div class="basket" id="basket">
       <div class="basket-labels">
         <ul>
           <li class="item item-heading">Produkt</li>
@@ -28,26 +28,6 @@
           <li class="subtotal">Suma brutto</li>
         </ul>
       </div>
-		{% for link in products %}
-      <div class="basket-product" id="basket">
-        <div class="item">
-          <div class="product-details">
-            <h1><strong><span class="item-quantity">{{link.quantity}} x </span> {{link.productName}} </strong></h1>
-            <p><strong>Navy, Size 18</strong></p>
-            <p>Product Code - 232321939</p>
-          </div>
-        </div>
-
-        <div class="price">{{link.priceGross}}</div>
-        <div class="quantity">
-          <input type="number" value="{{ link.quantity }}" min="1" class="quantity-field">
-        </div>
-        <div class="subtotal">104.00</div>
-        <a class="remove" href="/removeCart?cartId={{link.cartId}}">
-          <button>Remove</button>
-        </a>
-      </div>
-  		{% endfor %}
 	</div>
 
 	 <aside>

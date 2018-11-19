@@ -53,9 +53,26 @@ window.onload = function() {
         contentType:"application/json",
         success: function(response) {
             var data = JSON.parse(response);
-            var select = document.getElementById("basket");
+            var $bas = $('#basket');
             for(i in data) {
-                //alert(data[i].productName);
+                $bas.append('      <div class="basket-product">' +
+                    '        <div class="item">' +
+                    '          <div class="product-details">\n' +
+                    '            <h1><strong><span class="item-quantity">'+data[i].quantity+' x </span>'+ data[i].productId +'</strong></h1>' +
+                    '            <p><strong>Navy, Size 18</strong></p>' +
+                    '            <p>Product Code - 232321939</p>' +
+                    '          </div>' +
+                    '        </div>' +
+                    '\n' +
+                    '        <div class="price">'+data[i].priceGross+'</div>' +
+                    '        <div class="quantity">' +
+                    '          <input type="number" value="'+data[i].quantity +'" min="1" class="quantity-field">' +
+                    '        </div>' +
+                    '        <div class="subtotal"> Foo </div>' +
+                    '        <a class="remove" href="/removeCart?cartId='+data[i].cartId+'">' +
+                    '          <button>Remove</button>' +
+                    '        </a>' +
+                    '      </div>')
             }
         }
     })
