@@ -306,7 +306,7 @@ def register():
                         con.close()
                         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
                     con.close()
-                    return redirect(url_for('root'))
+                    return redirect(url_for('loginForm'))
                 return redirect(url_for('registerForm'))
 
 @app.route("/loginForm", methods=['GET', 'POST'])
@@ -350,14 +350,11 @@ def login():
 @app.route("/cart")
 def cart():
     loggedIn, firstName = getLoginDetails()
-    #TODO: Odkomentować weryfikację
-    '''
     if loggedIn == True:
         return render_template("cart.html")
     else:
         return redirect(url_for('root'))
-    '''
-    return render_template("cart.html")
+
 
 @app.route("/logout")
 def logout():

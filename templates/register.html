@@ -10,41 +10,8 @@
 <!-- Navbar z buttonami-->
 
     <div class="navbar">
-
-         <!-- Kategorie-->
-        <div class="dropdown">
-            <button class="dropbtn" >Kategorie
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                {% for link in categoryData %}
-                <a href="/kategorie?catId={{link[0]}}">{{link[1]}}</a>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Rodzaje-->
-        <div class="dropdown">
-            <button class="dropbtn">Rodzaje
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                {% for link in typeData %}
-                <a href="/rodzaje?typeId={{link[0]}}">{{ link.name}}</a>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Producenci-->
-        <div class="dropdown">
-            <button class="dropbtn">Producenci
-                <i class="fa fa-caret-down" ></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                {% for link in manuData %}
-                <a href="/producenci?manuId={{link[0]}}">{{link[1]}}</a>
-                {% endfor %}
-            </div>
+         <div class="navbar-button">
+            <a href="/">Strona główna</a>
         </div>
 
     </div>

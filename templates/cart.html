@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Koszyk</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -12,29 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 </head>
 <div class="navbar" id="navbar">
-
-         <!-- Kategorie-->
-        <div class="dropdown">
-            <button class="dropbtn" >Kategorie
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="catDropdown"></div>
-        </div>
-
-        <!-- Rodzaje-->
-        <div class="dropdown">
-            <button class="dropbtn">Rodzaje
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="typeDropdown"></div>
-        </div>
-
-        <!-- Producenci-->
-        <div class="dropdown">
-            <button class="dropbtn">Producenci
-                <i class="fa fa-caret-down" ></i>
-            </button>
-            <div class="dropdown-content" id="manDropdown"></div>
+        <div class="navbar-button">
+            <a href="/">Strona główna</a>
         </div>
 </div>
 <body>

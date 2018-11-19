@@ -13,6 +13,10 @@
     text-decoration: none;
 }
 
+.navbar-button {
+    float: left;
+}
+
 .dropdown {
     float: left;
     overflow: hidden;
