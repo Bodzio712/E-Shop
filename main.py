@@ -77,6 +77,17 @@ def root():
     return render_template('index.html')
 
 
+@app.route("/is_logged", methods=['POST', 'GET'])
+def is_logged():
+    data = {}
+    if 'email' not in session:
+        data['isLogged'] = 'false'
+    else:
+        data['isLogged'] = 'true'
+    json_data = json.dumps(data)
+    return jsonify(json_data)
+
+
 @app.route("/load_products", methods=['POST', 'GET'])
 def load_products():
     if request.method == 'GET':

@@ -42,34 +42,6 @@
             </button>
             <div class="dropdown-content" id="manDropdown"></div>
         </div>
-
-		{% if not loggedIn %}
-		<div class="dropdown">
-		<a class="dropbtn" href="/loginForm">Zaloguj</a>
-		</div>
-
-		{% else %}
-        <!-- Profil-->
-        <div class="dropdown">
-            <button class="dropbtn">Profil
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                <a href="/account/orders">Zamowienia</a>
-                <a href="/logout">Wyloguj</a>
-            </div>
-        </div>
-
-        <!-- Koszyk-->
-        <div id="cartId">
-		<a class="link" href="/cart">
-			<button class="cartClass">
-			    <img src={{url_for('static', filename='photos/cart.png')}} id="cartIcon" />
-                <p style="color: white"> {{noOfItems}} </p>
-			</button>
-		</a>
-	    </div>
-    {% endif %}
 </div>
 
 

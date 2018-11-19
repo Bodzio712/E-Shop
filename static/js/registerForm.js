@@ -30,8 +30,8 @@ function validate_phone() {
 }
 
 function validate_email() {
-    var regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/igm
-    var email = document.getElementById("email").valueOf.toString();
+    var regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/igm
+    var email = document.getElementById("email").value.toString();
         if(regex.test(email) == true) {
         return true;
     } else {
