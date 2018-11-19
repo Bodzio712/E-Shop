@@ -1,9 +1,20 @@
 function validate() {
-    if((validate_passwords() == true) && (validate_phone() == true) && (validate_email() == true)) {
+    if((validate_passwords() == true) && (validate_phone() == true) && (validate_email() == true && (validate_password_length()==true))) {
         return true;
     } else {
         return false;
     }
+}
+
+function validate_password_length() {
+    var pass = document.getElementById("password").value;
+    if (pass.toString().length<8){
+        alert("Hasło musi mieć co najmniej 8 znaków");
+        return false;
+    } else {
+        return true;
+    }
+
 }
 
 function validate_passwords() {

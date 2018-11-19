@@ -145,47 +145,59 @@ window.onload = function() {
         }
     })
 
+        var number=0;
+
+
     $.ajax({
         type: "GET",
         url: "http://127.0.0.1:5000/is_logged",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
-            var data = JSON.parse(response);
-            var $log = $('#navbar');
-            var isLogged = false
-            for(i in data) {
-                var x = data[i];
-                if(x.length == 4) {
-                    isLogged = true;
+            $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/item_number",
+            dataType: "json",
+            contentType:"application/json",
+            success: function(res) {
+                number = JSON.parse(res);
+
+                var data = JSON.parse(response);
+                var $log = $('#navbar');
+                var isLogged = false
+                for(i in data) {
+                    var x = data[i];
+                    if(x.length == 4) {
+                        isLogged = true;
+                    }
+                }
+                if(isLogged == false) {
+                    $log.append('<div class="dropdown">' +
+                        '<a class="dropbtn" href="/loginForm">Zaloguj</a>' +
+                        '</div>');
+                } else {
+                    $log.append('        <div class="dropdown">' +
+                        '            <button class="dropbtn">Profil' +
+                        '                <i class="fa fa-caret-down"></i>' +
+                        '            </button>' +
+                        '            <div class="dropdown-content" id="myDropdown">' +
+                        '                <a href="/account/orders">Zamowienia</a>' +
+                        '                <a href="/logout">Wyloguj</a>' +
+                        '            </div>' +
+                        '        </div>' +
+                        '' +
+                        '        <!-- Koszyk-->' +
+                        '        <div id="cartId">' +
+                        '<a class="link" href="/cart">' +
+                        '<button class="cartClass">' +
+                        '    <img src="/static/photos/cart.png" id="cartIcon" />' +
+                        '                <p style="color: white">'+number+'</p>' +
+                        '</button>' +
+                        '\</a>' +
+                        '</div>')
                 }
             }
-            if(isLogged == false) {
-                $log.append('<div class="dropdown">' +
-                    '<a class="dropbtn" href="/loginForm">Zaloguj</a>' +
-                    '</div>');
-            } else {
-                $log.append('        <div class="dropdown">' +
-                    '            <button class="dropbtn">Profil' +
-                    '                <i class="fa fa-caret-down"></i>' +
-                    '            </button>' +
-                    '            <div class="dropdown-content" id="myDropdown">' +
-                    '                <a href="/account/orders">Zamowienia</a>' +
-                    '                <a href="/logout">Wyloguj</a>' +
-                    '            </div>' +
-                    '        </div>' +
-                    '' +
-                    '        <!-- Koszyk-->' +
-                    '        <div id="cartId">' +
-                    '<a class="link" href="/cart">' +
-                    '<button class="cartClass">' +
-                    '    <img src="/static/photos/cart.png" id="cartIcon" />' +
-                    //TODO: Dopisać wyszukiwanie ilości produktów
-                    '                <p style="color: white">Foo</p>' +
-                    '</button>' +
-                    '\</a>' +
-                    '</div>')
-            }
+            })
         }
     })
 
