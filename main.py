@@ -94,7 +94,7 @@ def load_products():
         model = ProductModel()
         products = (model.get_product())
         xa = json.dumps([dict(r) for r in products])
-        print(xa)
+        #print(xa)
         return jsonify(xa)
     return redirect(url_for('root'))
 
@@ -150,6 +150,7 @@ def get_cart_details():
     model = CartModel()
     details = (model.get_cart_details())
     xa = json.dumps([dict(r) for r in details])
+    print(xa)
     return jsonify(xa)
 
 @app.route("/display_cart_items", methods=['POST', 'GET'])
@@ -373,5 +374,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port='8080')
+    app.run(debug=True, port='5000')
     #engine.dispose()

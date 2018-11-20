@@ -22,13 +22,18 @@ window.onload = function() {
         function showOrders() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/display_orders",
+        url: "http://127.0.0.1:5000/display_orders",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
             var data = JSON.parse(response);
             var $ord = $('#orders');
+            var id =0;
             for(i in data) {
+                if(id != data[i].orderID) {
+                    $ord.append('<div class="basket-product"></div>');
+                    id = data[i].orderID;
+                }
                 //alert(data[i].productName);
                 $ord.append('<div class="item">' +
                     '          <div class="product-details">' +
@@ -36,19 +41,19 @@ window.onload = function() {
                     '          </div>' +
                     '        </div>' +
                     '        <div class="price">'+data[i].valueGross+'</div>' +
-                    '        <div class = "quantity">{{ link.quantity }}</div>' +
-                    '<div class="delivery">'+data[i].deliveryId+'</div>')
+                    '        <div class = "quantity"><p style="margin: 0 0 15px 15px"> '+data[i].quantity+'</p></div>' +
+                    '<div class="delivery">'+data[i].deliveryType+'</div>')
+
             }
         }
     })
     }
 
 
-//TODO: Do poprawienia. Zwraca złe dane
     function showCartItems() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/display_cart_items",
+        url: "http://127.0.0.1:5000/display_cart",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -58,19 +63,19 @@ window.onload = function() {
                 $bas.append('      <div class="basket-product">' +
                     '        <div class="item">' +
                     '          <div class="product-details">\n' +
-                    '            <h1><strong><span class="item-quantity">'+data[i].quantity+' x </span>'+ data[i].productId +'</strong></h1>' +
+                    '            <h1><strong><span class="item-quantity">'+data[i].quantity+' x </span>'+ data[i].productName +'</strong></h1>' +
                     '            <p><strong>Navy, Size 18</strong></p>' +
                     '            <p>Product Code - 232321939</p>' +
                     '          </div>' +
                     '        </div>' +
                     '\n' +
-                    '        <div class="price">'+data[i].priceGross+'</div>' +
+                    '        <div class="price">'+data[i].priceGross.toFixed(2)+'</div>' +
                     '        <div class="quantity">' +
-                    '          <input type="number" value="'+data[i].quantity +'" min="1" class="quantity-field">' +
+                    '          <input type="number" value="'+data[i].quantity +'" min="1" class="quantity-field" name="quant">' +
                     '        </div>' +
-                    '        <div class="subtotal"> Foo </div>' +
+                    '        <div class="subtotal" name="sub">'+(data[i].quantity*data[i].priceGross).toFixed(2) +'</div>' +
                     '        <a class="remove" href="/removeCart?cartId='+data[i].cartId+'">' +
-                    '          <button>Remove</button>' +
+                    '          <button>Usuń</button>' +
                     '        </a>' +
                     '      </div>')
             }
@@ -81,7 +86,7 @@ window.onload = function() {
     function show_cart_droptables() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/delivery_details",
+        url: "http://127.0.0.1:5000/delivery_details",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -97,7 +102,7 @@ window.onload = function() {
     })
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/payment_details",
+        url: "http://127.0.0.1:5000/payment_details",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -116,7 +121,7 @@ window.onload = function() {
     function add_navbar() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_categories",
+        url: "http://127.0.0.1:5000/load_categories",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -132,7 +137,7 @@ window.onload = function() {
 
          $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_types",
+        url: "http://127.0.0.1:5000/load_types",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -148,7 +153,7 @@ window.onload = function() {
 
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_manufacturers",
+        url: "http://127.0.0.1:5000/load_manufacturers",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -167,13 +172,13 @@ window.onload = function() {
 
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/is_logged",
+        url: "http://127.0.0.1:5000/is_logged",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
             $.ajax({
             type: "GET",
-            url: "http://127.0.0.1:8080/item_number",
+            url: "http://127.0.0.1:5000/item_number",
             dataType: "json",
             contentType:"application/json",
             success: function(res) {
@@ -226,7 +231,7 @@ window.onload = function() {
 function get_products() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_products",
+        url: "http://127.0.0.1:5000/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -243,7 +248,7 @@ function get_products() {
 function get_category() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_categories",
+        url: "http://127.0.0.1:5000/load_categories",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -260,7 +265,7 @@ function get_category() {
 function get_manu() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_manufacturers",
+        url: "http://127.0.0.1:5000/load_manufacturers",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -277,7 +282,7 @@ function get_manu() {
 function get_type() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_types",
+        url: "http://127.0.0.1:5000/load_types",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -293,7 +298,7 @@ function get_type() {
 function display_cart() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/display_cart",
+        url: "http://127.0.0.1:5000/display_cart",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -448,16 +453,30 @@ function updateQuantity(quantityInput) {
 
 function updateSumItems() {
   var sumItems = 0;
-  $('.quantity input').each(function() {
-    sumItems += parseInt($(this).val());
-  });
-  $('.total-items').text(sumItems);
+  var x = document.getElementsByName('quant').values();
+  setTimeout(function(){
+      for(var item of x) {
+      sumItems += parseInt(item.value);
+  }
+    $('.total-items').text(sumItems);
+  }, 300);
+
+  var sumVal = 0;
+  var y = document.getElementsByName('sub');
+  setTimeout(function(){
+      for(var item of y) {
+      sumVal += parseInt(item.innerText);
+  }
+    $('.subtotal-value').text(sumVal.toFixed(2));
+      $('.total-value').text(sumVal.toFixed(2));
+  }, 300);
+
 }
 
 function showProducts(attribute="", number=0){
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:8080/load_products",
+        url: "http://127.0.0.1:5000/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -507,7 +526,7 @@ function makeProductsTable(data) {
                     '            </div>' +
                     '        </div>' +
                     '' +
-                    '        <div class="producent">{{link.name}}</div>' +
+                    '        <div class="producent">'+data[i].name+'</div>' +
                     '' +
                     '        <div class = "quantity">' +
                     '              <form action="/addToCart?productId=' + data[i].productId +'" method="post" href="/addToCart?productId=' + data[i].productId+'">' +

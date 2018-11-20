@@ -37,7 +37,9 @@ class OrdersModel():
 
     def get_orders(self):
         con = engine.connect()
-        order_all = con.execute(select([order])).fetchall()
+        join_obj = order.join(delivery, order.c.deliveryId == delivery.c.deliveryId)
+        join_sel = select([order.c.orderID, order.c.valueGross, order.c.quantity, order.c.productName, delivery.c.deliveryType, order.c.deliveryId]).select_from(join_obj)  # select statement
+        order_all = con.execute(join_sel).fetchall()
         con.close()
         return order_all
 
@@ -48,7 +50,7 @@ class ProductModel():
         con = engine.connect()
 
         join_obj = product.join(manu, product.c.manufacturerId == manu.c.manufacturerId)
-        join_sel = select([product.c.productId, product.c.productName, product.c.description, product.c.categoryId, product.c.manufacturerId, product.c.typeId, product.c.priceNet, manu.c.name]).select_from(join_obj)  # select statement
+        join_sel = select([product.c.productId, product.c.productName, product.c.description, product.c.categoryId, product.c.manufacturerId, product.c.typeId, product.c.priceNet, product.c.priceGross, manu.c.name]).select_from(join_obj)  # select statement
         details = con.execute(join_sel).fetchall()  # fetch data
 
         #product_all = con.execute(select([product])).fetchall()
