@@ -46,9 +46,14 @@ class ProductModel():
 
     def get_product(self):
         con = engine.connect()
-        product_all = con.execute(select([product])).fetchall()
+
+        join_obj = product.join(manu, product.c.manufacturerId == manu.c.manufacturerId)
+        join_sel = select([product.c.productId, product.c.productName, product.c.description, product.c.categoryId, product.c.manufacturerId, product.c.typeId, product.c.priceNet, manu.c.name]).select_from(join_obj)  # select statement
+        details = con.execute(join_sel).fetchall()  # fetch data
+
+        #product_all = con.execute(select([product])).fetchall()
         con.close()
-        return product_all
+        return details
 
 class TypeModel():
 
@@ -139,18 +144,18 @@ class CartModel():
             #Pobieranie detali
             join_obj = cart.join(product, product.c.productId == cart.c.productId)
             join_sel = select(
-                [product.c.productId, product.c.productName, product.c.manufacturerId, cart.c.cartId, cart.c.quantity,
+                [product.c.productId, product.c.productName, product.c.description, product.c.manufacturerId, cart.c.cartId, cart.c.quantity,
                  product.c.priceNet, product.c.priceGross]).select_from(join_obj)  # select statement
             details = con.execute(join_sel).fetchall()  # fetch data
 
-            #Pobieranie z bazy danych o metodach dostawy
-            select_delivery = select([delivery])
-            delivery_data = con.execute(select_delivery).fetchall()
-
-            #Pobieranie z bazy danych o metodach płatności
-            select_payment = select([payment])
-            payment_data = con.execute(select_payment).fetchall()
-            return details, delivery_data, payment_data
+            # #Pobieranie z bazy danych o metodach dostawy
+            # select_delivery = select([delivery])
+            # delivery_data = con.execute(select_delivery).fetchall()
+            #
+            # #Pobieranie z bazy danych o metodach płatności
+            # select_payment = select([payment])
+            # payment_data = con.execute(select_payment).fetchall()
+            return details#, delivery_data, payment_data
         except Exception as e:
             con.close()
 
@@ -160,5 +165,6 @@ class CartModel():
             removeId = cartId
             rem = delete(cart, cart.c.cartId == removeId, )
             con.execute(rem)
+            return True
         except Exception as e:
             con.close()

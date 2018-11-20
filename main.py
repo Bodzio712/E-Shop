@@ -68,7 +68,7 @@ def getLoginDetails():
             cur.execute("SELECT clientId, firstName FROM client WHERE email = '" + session['email'] + "'")
             userId, firstName = cur.fetchone()
     conn.close()
-    return (loggedIn, firstName)
+    return (loggedIn, firstName, userId)
 
 
 
@@ -94,6 +94,7 @@ def load_products():
         model = ProductModel()
         products = (model.get_product())
         xa = json.dumps([dict(r) for r in products])
+        print(xa)
         return jsonify(xa)
     return redirect(url_for('root'))
 
@@ -119,21 +120,30 @@ def load_categories():
     return jsonify(xa)
 
 #######--------Cart functions
-        # @app.route("/add_to_cart/<id>", methods=['POST', 'GET', 'PUT'])
-        # def add_to_cart():
-        #     clientId = str(id)
-        #     #productId, quantity tak samo!!!
-        #     model = CartModel()
-        #     add = (model.add_cart(clientId, productId, quantity))
-        #     return add
-        #
-        # @app.route("/remove_from_cart/<id>", methods=['POST', 'GET'])
-        # def remove_from_cart():
-        #     cartId = str(id)
-        #     model = CartModel()
-        #     remove = (model.remove_from_cart(cartId))
-        #     xa = json.dumps(remove)
-        #     return jsonify(xa)
+@app.route("/addToCart", methods=['POST', 'GET', 'PUT'])
+def add_to_cart():
+    productId = int(request.args.get('productId'))
+    loggedIn, firstName, userId = getLoginDetails()
+    quantity = request.form['liczba']
+    print(productId, userId, quantity)
+    model = CartModel()
+    add = (model.add_cart(userId, productId, quantity))
+    print(add)
+    if add == True:
+        return redirect(url_for('cart'))
+    else:
+        return redirect(url_for('root')) #zmienic na jakies 404
+
+@app.route("/removeCart", methods=['POST', 'GET'])
+def remove_from_cart():
+    cartId = int(request.args.get('cartId'))
+    model = CartModel()
+    remove = (model.remove_from_cart(cartId))
+    print(remove)
+    dele = json.dumps(remove)
+    print(dele)
+    return redirect(url_for('cart'))
+
 
 @app.route("/display_cart", methods=['POST', 'GET'])
 def get_cart_details():
@@ -187,7 +197,7 @@ def payment_detalis():
 
 @app.route("/placeOrder", methods=["POST"])
 def placeOrder():
-  loggedIn, firstName = getLoginDetails()
+  loggedIn, firstName, userId = getLoginDetails()
   with engine.connect() as connection:
     try:
         # email klienta pobierany z cookie
@@ -248,7 +258,7 @@ def placeOrder():
 
 @app.route("/account/profil")
 def accountProfil():
-    loggedIn, firstName= getLoginDetails()
+    loggedIn, firstName, userId= getLoginDetails()
     typeData, manuData, catData = xyz()
     item_no = item_number()
     return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, loggedIn = loggedIn)
@@ -349,7 +359,7 @@ def login():
 
 @app.route("/cart")
 def cart():
-    loggedIn, firstName = getLoginDetails()
+    loggedIn, firstName, userId = getLoginDetails()
     if loggedIn == True:
         return render_template("cart.html")
     else:
