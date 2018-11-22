@@ -182,9 +182,9 @@ def placeOrder():
         deliveryId = request.form['delivery-collection'],
         paymentId = request.form['payment-collection'],
         email = session['email']
-        model = placeOrder()
+        model = OrderModel()
         print("jestem w modelu")
-        status = (model.placeorder(deliveryId, paymentId, email))
+        status = (model.placeorder(deliveryId[0], paymentId[0], email))
         print("Stats")
         print(status)
         if status == True:

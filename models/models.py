@@ -211,8 +211,10 @@ class OrderModel():
                         valueGross=77.8)
                     connection.execute(ins)
             except Exception as e:
+                print(e)
                 connection.close()
+                return False
             connection.close()
-
+            return True
 
 
