@@ -40,7 +40,7 @@ class OrdersModel():
     def get_orders(self):
         con = engine.connect()
         join_obj = order.join(delivery, order.c.deliveryId == delivery.c.deliveryId)
-        join_sel = select([order.c.orderID, order.c.valueGross, order.c.quantity, order.c.productName, delivery.c.deliveryType, order.c.deliveryId]).select_from(join_obj)  # select statement
+        join_sel = select([order.c.orderID, order.c.valueGross, order.c.quantity, order.c.productName, order.c.date, delivery.c.deliveryType, order.c.deliveryId]).select_from(join_obj)  # select statement
         order_all = con.execute(join_sel).fetchall()
         con.close()
         return order_all
@@ -181,7 +181,7 @@ class OrderModel():
             try:
                 join_obj = product.join(cart, product.c.productId == cart.c.productId)
                 join_sel = select(
-                    [product.c.productId, product.c.productName, product.c.categoryId, cart.c.quantity]).select_from(
+                    [product.c.productId, product.c.productName, product.c.categoryId, product.c.priceGross, cart.c.quantity]).select_from(
                     join_obj)  # select statement
                 prod_data = connection.execute(join_sel)  # fetch data
 
@@ -207,8 +207,8 @@ class OrderModel():
                         paymentId=paymentId,
                         date=datetime.date.today(),
                         quantity=row.quantity,
-                        valueNet=99.9,
-                        valueGross=77.8)
+                        valueNet=00,
+                        valueGross=row.quantity*row.priceGross)
                     connection.execute(ins)
             except Exception as e:
                 print(e)

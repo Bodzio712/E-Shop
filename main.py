@@ -177,16 +177,12 @@ def payment_detalis():
 @app.route("/placeOrder", methods=["POST"])
 def placeOrder():
     loggedIn, firstName, userId = getLoginDetails()
-    print("jestem w place order")
     try:
         deliveryId = request.form['delivery-collection'],
         paymentId = request.form['payment-collection'],
         email = session['email']
         model = OrderModel()
-        print("jestem w modelu")
         status = (model.placeorder(deliveryId[0], paymentId[0], email))
-        print("Stats")
-        print(status)
         if status == True:
             delete_cart()
             return redirect(url_for('root'))

@@ -18,7 +18,6 @@ window.onload = function() {
 
     }
 
-    //TODO: Do poprawienia
         function showOrders() {
         $.ajax({
         type: "GET",
@@ -30,9 +29,9 @@ window.onload = function() {
             var $ord = $('#orders');
             var id =0;
             for(i in data) {
-                if(id != data[i].orderID) {
+                if(id != data[i].date) {
                     $ord.append('<div class="basket-product"></div>');
-                    id = data[i].orderID;
+                    id = data[i].date;
                 }
                 //alert(data[i].productName);
                 $ord.append('<div class="item">' +
