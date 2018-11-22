@@ -183,9 +183,8 @@ def placeOrder():
         email = session['email']
         model = OrderModel()
         status = (model.placeorder(deliveryId[0], paymentId[0], email))
-        if status == True:
-            delete_cart()
-            return redirect(url_for('root'))
+        delete_cart()
+        return redirect(url_for('root'))
     except Exception as e:
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
         return redirect(url_for('cart'))
