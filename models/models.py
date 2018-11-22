@@ -94,9 +94,9 @@ class CartModel():
     def delete_cart(self):
         try:
             con = engine.connect()
-            cart_delete = delete(cart)
+            d = delete(cart)
+            con.execute(d)
             con.close()
-            return True
         except Exception as e:
             con.close()
 
@@ -195,7 +195,6 @@ class OrderModel():
                 # stworz tabele orders i zapisz do bazy
                 print (prod_data)
                 for row in prod_data:
-                    print(row)
                     ins = order.insert().values(
                         productId=row.productId,
                         productName=row.productName,
@@ -211,7 +210,6 @@ class OrderModel():
                         valueGross=row.quantity*row.priceGross)
                     connection.execute(ins)
             except Exception as e:
-                print(e)
                 connection.close()
                 return False
             connection.close()

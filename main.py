@@ -128,7 +128,6 @@ def get_cart_details():
     model = CartModel()
     details = (model.get_cart_details())
     xa = json.dumps([dict(r) for r in details])
-    print(xa)
     return jsonify(xa)
 
 @app.route("/display_cart_items", methods=['POST', 'GET'])
@@ -146,8 +145,7 @@ def get_orders():
     return jsonify(xa)
 
 
-@app.route("/delete_cart", methods=['POST', 'GET', 'DELETE'])
-def delete_cart():
+def delete_cartx():
     model = CartModel()
     delete = (model.delete_cart())
     return delete
@@ -177,17 +175,14 @@ def payment_detalis():
 @app.route("/placeOrder", methods=["POST"])
 def placeOrder():
     loggedIn, firstName, userId = getLoginDetails()
-    try:
-        deliveryId = request.form['delivery-collection'],
-        paymentId = request.form['payment-collection'],
-        email = session['email']
-        model = OrderModel()
-        status = (model.placeorder(deliveryId[0], paymentId[0], email))
-        delete_cart()
-        return redirect(url_for('root'))
-    except Exception as e:
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-        return redirect(url_for('cart'))
+    deliveryId = request.form['delivery-collection'],
+    paymentId = request.form['payment-collection'],
+    email = session['email']
+    model = OrderModel()
+    status = (model.placeorder(deliveryId[0], paymentId[0], email))
+    delete_cartx()
+    return redirect(url_for('root'))
+
 
 ############# Logowanie#################
 @app.route("/account/orders")
@@ -277,5 +272,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port='8888')
+    app.run(debug=True, port='8889')
     #engine.dispose()

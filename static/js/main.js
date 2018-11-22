@@ -21,7 +21,7 @@ window.onload = function() {
         function showOrders() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/display_orders",
+        url: "http://127.0.0.1:8889/display_orders",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -41,7 +41,8 @@ window.onload = function() {
                     '        </div>' +
                     '        <div class="price">'+data[i].valueGross+'</div>' +
                     '        <div class = "quantity"><p style="margin: 0 0 15px 15px"> '+data[i].quantity+'</p></div>' +
-                    '<div class="delivery">'+data[i].deliveryType+'</div>')
+                    '       <div class="delivery">'+data[i].deliveryType+'</div>' +
+                    '       <div class="date">'+data[i].date+'</div>')
 
             }
         }
@@ -52,7 +53,7 @@ window.onload = function() {
     function showCartItems() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/display_cart",
+        url: "http://127.0.0.1:8889/display_cart",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -85,7 +86,7 @@ window.onload = function() {
     function show_cart_droptables() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/delivery_details",
+        url: "http://127.0.0.1:8889/delivery_details",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -101,7 +102,7 @@ window.onload = function() {
     })
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/payment_details",
+        url: "http://127.0.0.1:8889/payment_details",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -120,7 +121,7 @@ window.onload = function() {
     function add_navbar() {
         $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_categories",
+        url: "http://127.0.0.1:8889/load_categories",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -136,7 +137,7 @@ window.onload = function() {
 
          $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_types",
+        url: "http://127.0.0.1:8889/load_types",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -152,7 +153,7 @@ window.onload = function() {
 
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_manufacturers",
+        url: "http://127.0.0.1:8889/load_manufacturers",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -171,13 +172,13 @@ window.onload = function() {
 
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/is_logged",
+        url: "http://127.0.0.1:8889/is_logged",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
             $.ajax({
             type: "GET",
-            url: "http://127.0.0.1:5000/item_number",
+            url: "http://127.0.0.1:8889/item_number",
             dataType: "json",
             contentType:"application/json",
             success: function(res) {
@@ -230,7 +231,7 @@ window.onload = function() {
 function get_products() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_products",
+        url: "http://127.0.0.1:8889/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -247,7 +248,7 @@ function get_products() {
 function get_category() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_categories",
+        url: "http://127.0.0.1:8889/load_categories",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -264,7 +265,7 @@ function get_category() {
 function get_manu() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_manufacturers",
+        url: "http://127.0.0.1:8889/load_manufacturers",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -281,7 +282,7 @@ function get_manu() {
 function get_type() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_types",
+        url: "http://127.0.0.1:8889/load_types",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -297,7 +298,7 @@ function get_type() {
 function display_cart() {
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/display_cart",
+        url: "http://127.0.0.1:8889/display_cart",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
@@ -316,7 +317,7 @@ function display_cart() {
 //function delete_cart() {
 //    $.ajax({
 //        type: "DELETE",
-//        url: "http://127.0.0.1:5000/delete_cart",
+//        url: "http://127.0.0.1:8889/delete_cart",
 //        dataType: "json",
 //        contentType:"application/json",
 //        success: function(response) {
@@ -337,7 +338,7 @@ function display_cart() {
 //    //var id = $(this).attr("productId??????");
 //    $.ajax({
 //        type: "POST",
-//        url: "http://127.0.0.1:5000/add_to_cart",// + id.toString(),
+//        url: "http://127.0.0.1:8889/add_to_cart",// + id.toString(),
 //        dataType: "text",
 //        contentType:"application/json",
 //        success: function(response) {
@@ -352,7 +353,7 @@ function display_cart() {
 //    //var id = $(this).attr("cartId??????");
 //    $.ajax({
 //        type: "PUT",
-//        url: "http://127.0.0.1:5000/remove_from_cart/",// + id.toString(),
+//        url: "http://127.0.0.1:8889/remove_from_cart/",// + id.toString(),
 //        dataType: "text",
 //        success: function(response) {
 //            alert("udalo sie usunac")
@@ -475,7 +476,7 @@ function updateSumItems() {
 function showProducts(attribute="", number=0){
     $.ajax({
         type: "GET",
-        url: "http://127.0.0.1:5000/load_products",
+        url: "http://127.0.0.1:8889/load_products",
         dataType: "json",
         contentType:"application/json",
         success: function(response) {
