@@ -26,36 +26,6 @@ logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 FTPADDR = "/"
 
-def xyz():
-    con = engine.connect()
-    try:
-        type = metadata.tables['type']
-        manu = metadata.tables['manufacturer']
-        cats = metadata.tables['category']
-        product = metadata.tables['product']
-        cart = metadata.tables['cart']
-
-        type_sel = select([type])
-        manu_sel = select([manu])
-        cats_sel = select([cats])
-        product_sel = select([product])
-        cart_sel = select([cart])
-
-        typeData = con.execute(type_sel).fetchall()
-        manuData = con.execute(manu_sel).fetchall()
-        catData = con.execute(cats_sel).fetchall()
-        productData = con.execute(product_sel).fetchall()
-        cartData = con.execute(cart_sel).fetchall()
-
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + url_for('root'))
-     #otworz contabele
-     #dodaj do tabelki
-     #zamknij conn
-    con.close()
-    return (typeData, manuData, catData)
-
 def getLoginDetails():
     with sqlite3.connect('database.db') as conn:
         cur = conn.cursor()
@@ -119,7 +89,15 @@ def load_categories():
     xa = json.dumps([dict(r) for r in categories])
     return jsonify(xa)
 
-#######--------Cart functions
+#####################Cart functions#####################
+@app.route("/cart")
+def cart():
+    loggedIn, firstName, userId = getLoginDetails()
+    if loggedIn == True:
+        return render_template("cart.html")
+    else:
+        return redirect(url_for('root'))
+
 @app.route("/addToCart", methods=['POST', 'GET', 'PUT'])
 def add_to_cart():
     productId = int(request.args.get('productId'))
@@ -198,93 +176,32 @@ def payment_detalis():
 
 @app.route("/placeOrder", methods=["POST"])
 def placeOrder():
-  loggedIn, firstName, userId = getLoginDetails()
-  with engine.connect() as connection:
+    loggedIn, firstName, userId = getLoginDetails()
+    print("jestem w place order")
     try:
-        # email klienta pobierany z cookie
+        deliveryId = request.form['delivery-collection'],
+        paymentId = request.form['payment-collection'],
         email = session['email']
-
-        delivery = metadata.tables['delivery']
-        payment = metadata.tables['payment']
-        client = metadata.tables['client']
-
-        product = metadata.tables['product']
-        cart = metadata.tables['cart']
-        orders = metadata.tables['orders']
-
-        join_obj = product.join(cart, product.c.productId == cart.c.productId)
-        join_sel = select([product.c.productId, product.c.productName, product.c.categoryId, cart.c.quantity]).select_from(join_obj)#select statement
-        prod_data = connection.execute(join_sel)#fetch data
-
-        # Pobieranie z bazy danych o metodach dostawy
-        select_delivery = select([delivery])
-        delivery_data = connection.execute(select_delivery).fetchall()
-
-        # Pobieranie z bazy danych o metodach płatności
-        select_payment = select([payment])
-        paymant_data = connection.execute(select_payment).fetchall()
-
-        select_clientId = select([client]).where(client.c.email == email)
-        client_data = connection.execute(select_clientId).fetchall()
-
-        for row in client_data:
-            clientId = row.clientId
-            clientAdress = row.clientAddress
-
-        #stworz tabele orders i zapisz do bazy
-
-        for row in prod_data:
-            ins = orders.insert().values(
-            productId=row.productId,
-            productName=row.productName,
-            categoryId=row.categoryId,
-            clientId=clientId,
-            clientAddress=clientAdress,
-            idNip=1,
-            deliveryId=request.form['delivery-collection'],
-            paymentId=request.form['payment-collection'],
-            date=datetime.date.today(),
-            quantity=row.quantity,
-            valueNet=99.9,
-            valueGross=77.8)
-            connection.execute(ins)
+        model = placeOrder()
+        print("jestem w modelu")
+        status = (model.placeorder(deliveryId, paymentId, email))
+        print("Stats")
+        print(status)
+        if status == True:
+            delete_cart()
+            return redirect(url_for('root'))
     except Exception as e:
-        connection.close()
         logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + firstName + " URL: " + request.base_url)
-    connection.close()
+        return redirect(url_for('cart'))
 
-  delete_cart()
-  return redirect(url_for('root'))
-
-
-@app.route("/account/profil")
-def accountProfil():
-    loggedIn, firstName, userId= getLoginDetails()
-    typeData, manuData, catData = xyz()
-    item_no = item_number()
-    return render_template('index.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, loggedIn = loggedIn)
-
-
+############# Logowanie#################
 @app.route("/account/orders")
 def accountOrders():
     return render_template("orders.html")
 
-
-
 @app.route("/registerForm", methods = ['GET', 'POST'])
 def registerForm():
-    item_no = item_number()
-    con = engine.connect()
-    try:
-        product = metadata.tables['product']
-        meta = select([product])
-        products = con.execute(meta)
-    except Exception as e:
-        con.close()
-        logger.error('Failed to upload to ftp: ' + str(e) + " Username: " + "TEST" + " URL: " + request.base_url)
-    con.close()
-    typeData, manuData, catData = xyz()
-    return render_template('register.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+    return render_template('register.html')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -332,8 +249,7 @@ def loginForm():
         con.close()
         logger.error('Failed to upload to ftp: ' + str(e) +  " URL: " + request.base_url)
     con.close()
-    typeData, manuData, catData = xyz()
-    return render_template('login.html', categoryData=catData, typeData = typeData, manuData = manuData, noOfItems=item_no, productData=products)
+    return render_template('login.html')
 
 
 def is_valid(email, password):
@@ -358,14 +274,6 @@ def login():
         else:
             logger.error('Failed to upload to ftp: ' + request.base_url)
 
-@app.route("/cart")
-def cart():
-    loggedIn, firstName, userId = getLoginDetails()
-    if loggedIn == True:
-        return render_template("cart.html")
-    else:
-        return redirect(url_for('root'))
-
 
 @app.route("/logout")
 def logout():
@@ -374,5 +282,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port='5000')
+    app.run(debug=True, port='8888')
     #engine.dispose()
